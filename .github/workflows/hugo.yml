@@ -10,7 +10,6 @@ permissions:
   pages: write
   id-token: write
 
-# Ensure only one deploy runs at a time
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -22,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: true  # Fetch Hugo themes if using as submodules
+          submodules: false
           fetch-depth: 0
 
       - name: Setup Hugo
