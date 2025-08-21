@@ -1,0 +1,9 @@
+baseURL = 'https://kylejones200.github.io/ml4u/'
+languageCode = 'en-us'
+title = 'Machine Learning for Power & Utilities'
+theme = 'blowfish'
+
+# Pagination
+[pagination]
+  pagerSize = 10
+enableRobotsTXT = true
