@@ -1,93 +1,60 @@
 # ML4U: Machine Learning for Power & Utilities
 
-A Hugo-based site that provides hands-on chapters, code, and demos for applying Machine Learning to the power and utilities sector.
+A practical, chapter-based guide with runnable Python for applying Machine Learning across the power and utilities lifecycle: forecasting, predictive maintenance, outage prediction, DER integration, NLP for compliance, orchestration, and more.
 
 - Live site: https://kylejones200.github.io/ml4u/
-- Generator: Hugo (extended)
-- Theme: Blowfish (vendored in `themes/blowfish/`)
 
-## Quick start (local)
+## Who this is for
 
-Prerequisites:
-- Hugo Extended (https://gohugo.io/installation/)
+- Utility leaders and practitioners exploring ML’s practical value.
+- Data scientists and engineers seeking domain-grounded examples.
+- Students learning applied ML with real grid-oriented scenarios.
 
-Run the dev server:
-```bash
-hugo server -D
-```
-Then open the URL shown in the terminal (typically http://localhost:1313/ml4u/).
+## What you’ll learn
 
-Build the site:
-```bash
-hugo --minify
-```
-The static files are generated into `public/`.
+- How core ML methods map to utility problems (load, reliability, maintenance, customer analytics).
+- How to operationalize models (MLOps, orchestration, governance, ethics).
+- How to integrate multimodal data (text, images, sensors) for real decisions.
 
-## Content structure
+## What’s inside
 
-- Homepage: `content/_index.md`
-- Chapters: each chapter is a leaf bundle using `index.md` inside its folder for clean URLs
-  - Example: `content/c1/index.md` → https://kylejones200.github.io/ml4u/c1/
-  - Folders currently: `c1` … `c20`
-- Additional docs: `content/docs/`
+- Chapters `c1` … `c20`, each with:
+  - A short narrative framing the business problem and analytics approach.
+  - An accompanying Python file with runnable code examples.
+  - Clean URLs (e.g., `content/c10/index.md` → https://kylejones200.github.io/ml4u/c10/).
 
-### Creating a new chapter
-1. Create a folder `content/c21/` (or the next number).
-2. Add `index.md` with front matter and content, e.g.:
-   ```markdown
-   ---
-   title: "New Chapter Title"
-   description: "Short summary"
-   ---
-   # Heading
-   Content here…
-   ```
-3. Add any assets alongside `index.md` in the same folder if needed.
+Topics include: data readiness, ML fundamentals, load forecasting, predictive maintenance, outage prediction, grid optimization, DER forecasting, customer analytics, computer vision, NLP, MLOps, orchestration, cybersecurity, ethics, enterprise integration, and full-platform deployment.
 
-## Configuration
+## How the code examples render
 
-- `hugo.toml`
-  - `baseURL = 'https://kylejones200.github.io/ml4u/'`
-  - `theme = 'blowfish'`
-  - Enable HTML in Markdown (Goldmark):
-    ```toml
-    [markup]
-      [markup.goldmark]
-        [markup.goldmark.renderer]
-          unsafe = true
-    ```
-  - Disable RSS site-wide (we only publish HTML/JSON):
-    ```toml
-    disableKinds = ["RSS"]
-    [outputs]
-      home = ["HTML", "JSON"]
-    ```
+- Each chapter auto-embeds a sibling Python file as a highlighted code block at the end of the page.
+- You can override which file appears via the chapter front matter field `pyfile`, e.g.:
+  ```yaml
+  ---
+  title: "Outage Prediction and Reliability Analytics"
+  pyfile: "outage_prediction.py"
+  ---
+  ```
+- Implementation lives in `layouts/_default/single.html` and the `pyfile` shortcode.
 
-## Deployment (GitHub Pages)
+## Roadmap
 
-- Workflow: `.github/workflows/hugo.yml`
-  - Checks out repo (no submodules needed — theme is vendored)
-  - Builds with `hugo --minify`
-  - Uploads `public/` as Pages artifact
-  - Deploys via `actions/deploy-pages`
+- Expand line-range controls for code embeds per chapter.
+- Add lightweight datasets and visualizations per topic.
+- Publish notebooks that mirror the embedded scripts.
+- Enrich chapter cross-links (e.g., how maintenance scores feed outage risk).
 
-### Triggering a deploy
-- Push to `main` or run the workflow manually (Actions → Run workflow).
+## Using the site
 
-### Troubleshooting
-- Seeing XML at the root?
-  - Hard refresh `https://kylejones200.github.io/ml4u/?v=<random>`
-  - Confirm latest Actions run is green.
-  - Ensure `disableKinds = ["RSS"]` is in `hugo.toml` and that the workflow completed a fresh deploy.
-- Theme not applied?
-  - Ensure `theme = 'blowfish'` in `hugo.toml` and that the `themes/blowfish/` directory is present.
+- Read chapters online at the live site; copy the embedded Python into your environment and run.
+- Each chapter’s code is also stored alongside its content under `content/<chapter>/`.
 
 ## Contributing
 
 - Open a PR against `main`.
-- Keep chapters self-contained. Prefer `index.md` per chapter for clean URLs.
-- Use short, descriptive titles and add a `description` in front matter.
+- Keep chapters self-contained and focused on business impact + runnable code.
+- Prefer `index.md` per chapter for clean URLs and add a concise `description` in front matter.
 
 ## License
 
-Content copyright © its authors. Theme © Blowfish authors. See theme licensing in `themes/blowfish/`.
+Content © its authors.
