@@ -3,6 +3,7 @@ title: "Outage Prediction and Reliability Analytics"
 description: "Storm-driven outage risk prediction and long-term reliability analytics."
 weight: 6
 draft: false
+pyfile: "outage_prediction.py"
 ---
 ### The Business Problem: Reducing the Impact of Outages
 
@@ -38,3 +39,4 @@ In this chapter’s demo, we will build a simplified outage prediction workflow.
 
 This exercise shows how analytics can directly reduce outage impacts, improve restoration efficiency, and feed into long-term reliability strategies. By leveraging data utilities already collect, outage prediction moves reliability management from a reactive burden to a proactive capability that strengthens both grid resilience and customer trust.
 
+{{< pyfile >}}

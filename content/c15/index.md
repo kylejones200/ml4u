@@ -3,6 +3,7 @@ title: "AI Ethics, Regulation, and the Future of Utilities"
 description: "Fairness, explainability, and governance for regulated utility AI."
 weight: 15
 draft: false
+pyfile: "ethics.py"
 ---
 ### The Business Problem: Balancing Innovation with Responsibility
 
@@ -36,3 +37,4 @@ In this chapter’s demo, we will focus on fairness and explainability. We will:
 
 This demonstration highlights how utilities can operationalize ethics and governance within their analytics workflows, ensuring that AI supports both operational goals and regulatory obligations.
 
+{{< pyfile >}}

@@ -3,6 +3,7 @@ title: "Predictive Maintenance for Grid Assets"
 description: "Condition-based maintenance with classification and anomaly detection for assets."
 weight: 5
 draft: false
+pyfile: "pdm_for_grid.py"
 ---
 
 ### The Business Problem: The Cost of Unplanned Failures
@@ -41,3 +42,4 @@ In this chapter’s demo, we will build a simplified predictive maintenance pipe
 
 By combining sensor data, asset attributes, and basic machine learning techniques, we will replicate the core workflow utilities use to modernize their maintenance programs. This exercise demonstrates how analytics can transform maintenance from reactive firefighting into proactive, targeted intervention, reducing costs and improving reliability in measurable ways.
 
+{{< pyfile >}}

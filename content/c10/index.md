@@ -3,6 +3,7 @@ title: "Computer Vision for Utilities"
 description: "Automated inspections using object detection and image analytics."
 weight: 10
 draft: false
+pyfile: "computervision.py"
 ---
 
 ### The Business Problem: Automating Inspections and Reducing Field Costs
@@ -37,3 +38,4 @@ In this chapter’s demo, we will build a computer vision pipeline for defect de
 
 This demonstration shows how utilities can use computer vision to move beyond manual inspections and toward automated, data-driven asset monitoring that is faster, safer, and more cost-effective.
 
+{{< pyfile >}}

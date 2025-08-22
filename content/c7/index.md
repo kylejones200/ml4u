@@ -3,6 +3,7 @@ title: "Grid Operations Optimization"
 description: "Optimization and reinforcement learning for voltage and operations control."
 weight: 7
 draft: false
+pyfile: "grid_optimization.py"
 ---
 
 ### The Business Problem: Managing a Dynamic Grid in Real Time
@@ -36,3 +37,5 @@ In this chapter’s demo, we will construct a simplified grid simulation where v
 * Visualize how the agent improves voltage regulation over time compared to static control.
 
 This hands-on example illustrates how intelligent control techniques can transform grid operations from reactive rule-following into adaptive, data-driven management.
+
+{{< pyfile >}}

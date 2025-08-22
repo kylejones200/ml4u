@@ -3,6 +3,7 @@ title: "MLOps for Utilities"
 description: "From pilot to production: tracking, deployment, and monitoring of models."
 weight: 12
 draft: false
+pyfile: "mlflow.py"
 ---
 
 ### The Business Problem: Scaling Machine Learning Beyond Pilots
@@ -37,3 +38,4 @@ In this chapter’s demo, we will implement a complete MLOps workflow. We will:
 
 This demonstration bridges the gap between analytics and operations, showing how machine learning can be embedded into utility workflows with the reliability, traceability, and scalability required for real-world impact.
 
+{{< pyfile >}}

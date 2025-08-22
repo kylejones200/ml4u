@@ -3,6 +3,7 @@ title: "Case Studies and Integrated Pipelines"
 description: "End-to-end orchestration across maintenance, outages, and forecasting."
 weight: 14
 draft: false
+pyfile: "casestudy.py"
 ---
 
 ### The Business Problem: Bringing Analytics Together for Systemwide Impact
@@ -36,3 +37,4 @@ In this chapter’s demo, we will build an integrated pipeline that:
 * Produces unified outputs suitable for dashboards or operational handoffs.
 
 This exercise illustrates how utilities can move beyond isolated pilots and create connected analytics ecosystems that deliver consistent, actionable intelligence across their operations.
+{{< pyfile >}}

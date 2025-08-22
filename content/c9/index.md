@@ -3,6 +3,7 @@ title: "Customer Analytics and Demand Response"
 description: "AMI-driven segmentation and targeting for effective demand response."
 weight: 9
 draft: false
+pyfile: "demand_response.py"
 ---
 ### The Business Problem: Engaging Customers to Manage Demand
 
@@ -39,3 +40,4 @@ In this chapter’s demo, we will work with synthetic smart meter data to:
 * Discuss how these segments inform targeted demand response design and incentive structures.
 
 By the end, we will see how simple clustering techniques turn raw consumption data into actionable customer insights, making demand response programs more effective and efficient.
+{{< pyfile >}}

@@ -10,7 +10,7 @@ Artificial intelligence and machine learning offer a path forward. These technol
 
 This book was written to bridge the gap between promise and practice. It is designed for practitioners, engineers, and leaders in utilities who see the potential of AI but need a practical guide to applying it within the realities of a regulated, mission-critical industry.
 
----
+
 
 ### Why This Book
 
@@ -20,7 +20,7 @@ Each chapter in this book addresses a specific problem that utilities face: bala
 
 These chapters are designed to stand alone but also build on one another. Early chapters focus on core foundations: understanding utility data, applying machine learning basics, and improving load forecasting. Later chapters expand into specialized areas like cybersecurity analytics, large language models, and enterprise-scale AI deployment. Together, they trace a path from simple, high-value wins to a future where AI is woven throughout the utility enterprise.
 
----
+
 
 ### How the Book is Organized
 
@@ -33,7 +33,7 @@ The book is structured around 20 chapters, grouped conceptually into four phases
 
 Each chapter includes a detailed introduction to frame the business challenge, explain the analytics solution, and present a demo grounded in realistic utility data.
 
----
+
 
 ### What You Will Gain
 
@@ -47,7 +47,7 @@ By the end of this book, you will:
 
 This book is not just about algorithms or coding. It is about how analytics fits into the daily work of running a utility, from the control room to field operations to regulatory compliance. It shows how AI can enhance—not replace—the expertise of engineers, operators, and planners by providing them with better tools to make informed decisions.
 
----
+
 
 ### Who Should Read This Book
 
@@ -60,7 +60,7 @@ This book is written for a broad audience within the utility sector:
 
 No prior experience in machine learning is required beyond basic familiarity with data and utility operations. The demos are designed to be accessible, using realistic but simplified datasets to illustrate each concept without overwhelming detail.
 
----
+
 
 ### A Practical Path to the Future
 

@@ -3,6 +3,7 @@ title: "Future Trends and Strategic Roadmap for AI in Utilities"
 description: "Sequencing initiatives and projecting long-term AI impacts."
 weight: 18
 draft: false
+pyfile: "trends.py"
 ---
 
 ### The Business Problem: Planning for an AI-Driven Utility Landscape
@@ -35,3 +36,4 @@ In this chapter’s demo, we will simulate a ten-year AI adoption scenario for a
 
 This scenario illustrates not only the benefits of AI adoption but also the importance of sequencing initiatives, managing change, and aligning analytics with long-term grid modernization strategies.
 
+{{< pyfile >}}

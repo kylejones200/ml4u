@@ -3,6 +3,7 @@ title: "Renewable Integration and DER Forecasting"
 description: "Forecasting PV and wind, modeling net load, and DER operational impacts."
 weight: 8
 draft: false
+pyfile: "DER_forecasting.py"
 ---
 ### The Business Problem: Balancing Variability from Renewable Energy
 
@@ -38,3 +39,4 @@ In this chapter’s demo, we will simulate a solar photovoltaic plant using PVLi
 
 This demonstration ties renewable forecasting directly to operational challenges, showing how analytics enables utilities to integrate variable resources while maintaining reliability and efficiency.
 
+{{< pyfile >}}

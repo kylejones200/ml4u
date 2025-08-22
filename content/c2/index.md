@@ -3,6 +3,7 @@ title: "Data in Power and Utilities"
 description: "Data sources, cleaning, resampling, and integration for utility analytics."
 weight: 2
 draft: false
+pyfile: "data_for_power_and_utilities.py"
 ---
 ### The Business Problem: Data Without Insight
 
@@ -45,3 +46,4 @@ We will also visualize these transformations, showing how raw meter readings and
 
 This chapter lays the groundwork for everything that follows. Whether forecasting load, predicting outages, or optimizing maintenance schedules, the quality of insights depends on the quality of the underlying data. By mastering data preparation in the utility context, we establish the foundation on which machine learning models will be built in later chapters.
 
+{{< pyfile >}}

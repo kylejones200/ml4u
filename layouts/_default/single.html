@@ -3,5 +3,36 @@
   <article class="content">
     <h1>{{ .Title }}</h1>
     {{ .Content }}
+    {{/* Auto-embed a sibling .py file at the end of chapter pages */}}
+    {{ $override := .Params.pyfile }}
+    {{ $dir := .Page.File.Dir }}
+    {{ $chosen := "" }}
+    {{ if $override }}
+      {{ $chosen = (printf "%s%s" $dir $override) }}
+    {{ else }}
+      {{ $entries := readDir $dir }}
+      {{ $pyfiles := slice }}
+      {{ range $e := $entries }}
+        {{ if hasSuffix $e.Name ".py" }}
+          {{ $pyfiles = $pyfiles | append (printf "%s%s" $dir $e.Name) }}
+        {{ end }}
+      {{ end }}
+      {{ if gt (len $pyfiles) 0 }}
+        {{/* Prefer a file named like the section if present, else first */}}
+        {{ $preferred := printf "%s%s.py" $dir .Section }}
+        {{ if in $pyfiles $preferred }}
+          {{ $chosen = $preferred }}
+        {{ else }}
+          {{ $chosen = index $pyfiles 0 }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+    {{ with $chosen }}
+      {{ with readFile . }}
+        <hr>
+        <h2>Code</h2>
+        {{ highlight . "python" "linenos=false" }}
+      {{ end }}
+    {{ end }}
   </article>
 {{ end }}

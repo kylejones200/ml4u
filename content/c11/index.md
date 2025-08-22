@@ -3,6 +3,7 @@ title: "Natural Language Processing for Maintenance and Compliance"
 description: "NLP for logs, reports, and compliance documents to extract insight."
 weight: 11
 draft: false
+pyfile: "nlp4u.py"
 ---
 ### The Business Problem: Extracting Insight from Unstructured Text
 
@@ -35,3 +36,4 @@ In this chapter’s demo, we will explore how NLP can be used to process mainten
 * Show how these results could feed into maintenance prioritization or compliance dashboards.
 
 By turning narrative records into structured, searchable information, NLP provides utilities with a new layer of insight that complements sensor and asset data, improving both operational awareness and regulatory readiness.
+{{< pyfile >}}

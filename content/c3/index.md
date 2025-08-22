@@ -3,6 +3,7 @@ title: "Machine Learning Fundamentals"
 description: "Core ML methods—regression, classification, clustering—mapped to utility use cases."
 weight: 3
 draft: false
+pyfile: "ML4U.py"
 ---
 
 ### The Business Problem: Predicting and Classifying in Complex Environments
@@ -46,3 +47,5 @@ In this chapter’s demo, we will build three small but representative models us
 Each example mirrors a real-world utility use case while remaining accessible enough to understand the mechanics. Through these exercises, we will see how data is transformed into predictions, how models are evaluated, and how results connect back to operational decision-making.
 
 This chapter bridges the gap between theory and applied practice, grounding machine learning fundamentals in the context of utility operations. It demonstrates that these techniques are not abstract—they are tools directly applicable to solving persistent industry challenges using the data utilities already collect.
+
+{{< pyfile >}}

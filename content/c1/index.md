@@ -3,6 +3,7 @@ title: "Introduction to Machine Learning in Power and Utilities"
 description: "Why ML matters for utilities, key pressures on the grid, and a simple weather-to-load demo to build intuition."
 weight: 1
 draft: false
+pyfile: "intro_to_ML.py"
 ---
 
 
@@ -76,3 +77,5 @@ In the demo, you will:
 By the end, you’ll see how a straightforward ML model maps directly to a utility use case—predicting load shifts driven by weather—and understand why even simple analytics can drive measurable value. This chapter builds intuition: ML in utilities isn’t magic; it’s about pairing domain knowledge with the right data and techniques to solve operational problems.
 
 In later chapters, we will layer on complexity: hourly AMI data, SCADA sensor feeds, vegetation risk models, YOLO-based drone inspection, LLMs for log analysis, and eventually full-scale AI-driven utility platforms. But we start here—with a single, interpretable model connecting a core variable (temperature) to a critical output (load).
+
+{{< pyfile >}}

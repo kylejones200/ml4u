@@ -3,6 +3,7 @@ title: "Load Forecasting and Demand Analytics"
 description: "Short-term and day-ahead forecasting with ARIMA and weather-driven features."
 weight: 4
 draft: false
+pyfile: "load_forecasting.py"
 ---
 
 ### The Business Problem: Balancing Supply and Demand in Real Time
@@ -42,3 +43,5 @@ We will focus on short-term (hourly) and day-ahead horizons, showing how even mo
 
 This chapter establishes forecasting as both an analytic and operational discipline: one that informs decisions across planning, operations, markets, and customer engagement, making it a cornerstone of utility machine learning efforts.
 
+
+{{< pyfile >}}

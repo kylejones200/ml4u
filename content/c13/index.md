@@ -3,6 +3,7 @@ title: "Cybersecurity Analytics for Critical Infrastructure"
 description: "Anomaly detection and intrusion classification tailored to OT/IT."
 weight: 13
 draft: false
+pyfile: "cybersecurity.py"
 ---
 
 ### The Business Problem: Protecting the Grid from Evolving Threats
@@ -38,3 +39,4 @@ In this chapter’s demo, we will work with network traffic data to:
 By combining machine learning with cybersecurity practices, utilities can build smarter defenses tailored to their unique operational context and protect critical infrastructure from growing cyber threats.
 
 
+{{< pyfile >}}

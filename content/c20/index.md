@@ -3,6 +3,7 @@ title: "Full Utility AI Platform Deployment"
 description: "Deploying scalable AI platforms with APIs, MLOps, and governance."
 weight: 20
 draft: false
+pyfile: "pipeline.py"
 ---
 
 
@@ -42,3 +43,4 @@ In this chapter’s demo, we will simulate deploying a predictive maintenance mo
 * Integrate the endpoint with a simulated SCADA data feed to demonstrate how predictions flow directly into operational monitoring tools.
 
 This example illustrates how a well-architected AI platform moves machine learning from the realm of isolated pilots into the core of utility operations, delivering sustained value at enterprise scale.
+{{< pyfile >}}

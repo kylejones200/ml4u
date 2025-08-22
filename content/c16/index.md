@@ -3,6 +3,7 @@ title: "Orchestration with Prefect"
 description: "Automating analytics pipelines and dependencies with Prefect."
 weight: 16
 draft: false
+pyfile: "mlops.py"
 ---
 
 ### The Business Problem: Automating and Scaling Analytics Workflows
@@ -34,3 +35,4 @@ In this chapter’s demo, we will build an orchestrated pipeline using Prefect. 
 * Schedule the pipeline to run automatically, simulating daily operational execution.
 
 This demonstration shows how orchestration transforms machine learning from isolated scripts into coordinated, reliable workflows that align with the pace and complexity of utility operations.
+{{< pyfile >}}

@@ -3,6 +3,7 @@ title: "Integration with Enterprise Systems"
 description: "Unifying GIS, SCADA, and EAM to create actionable, connected data."
 weight: 19
 draft: false
+pyfile: "geospatial.py"
 ---
 ### The Business Problem: Bridging Operational and Business Systems
 
@@ -36,3 +37,4 @@ In this chapter’s demo, we will integrate GIS, SCADA, and EAM datasets to:
 
 By the end of this example, we will demonstrate how integration streamlines workflows, enhances situational awareness, and provides the foundation for advanced analytics that cut across operational and enterprise domains.
 
+{{< pyfile >}}

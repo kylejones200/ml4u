@@ -3,6 +3,7 @@ title: "Large Language Models and Multimodal AI for Utilities"
 description: "LLMs for text plus multimodal integration with images and sensors."
 weight: 17
 draft: false
+pyfile: "AI4U.py"
 ---
 
 ### The Business Problem: Making Sense of Complex, Unstructured Data
@@ -34,3 +35,4 @@ In this chapter’s demo, we will build a pipeline that uses an LLM to analyze a
 * Demonstrate how combining text and structured data provides richer insights for asset risk assessment.
 
 This example illustrates how LLMs and multimodal AI unlock a new dimension of utility analytics, bridging unstructured and structured data to create comprehensive, actionable intelligence.
+{{< pyfile >}}
