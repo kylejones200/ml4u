@@ -14,6 +14,9 @@ enableRobotsTXT = true
     [markup.goldmark.renderer]
       unsafe = true
 
+# Disable RSS site-wide (top-level)
+disableKinds = ["RSS"]
+
 # Force outputs for home to include HTML (prevents feed-only home)
 [outputs]
-  home = ["HTML", "RSS", "JSON"]
+  home = ["HTML", "JSON"]
