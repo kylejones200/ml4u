@@ -45,7 +45,7 @@ jobs:
           hugo config | sed -n '1,200p'
 
       - name: Build
-        run: hugo --minify -t blowfish
+        run: hugo --minify
 
       - name: Verify build output
         run: |

@@ -1,7 +1,7 @@
 ---
 title: "Machine Learning for Power & Utilities"
 description: "A practical guide with chapters, code, and demos for applying ML to electric utilities."
-outputs: ["HTML", "RSS", "JSON"]
+outputs: ["HTML", "JSON"]
 ---
 
 ## Build Data-Driven Utilities

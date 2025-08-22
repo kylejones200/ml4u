@@ -1,7 +1,7 @@
 baseURL = 'https://kylejones200.github.io/ml4u/'
 languageCode = 'en-us'
 title = 'Machine Learning for Power & Utilities'
-theme = 'blowfish'
+cleanDestinationDir = true
 
 # Pagination
 [pagination]
@@ -14,9 +14,12 @@ enableRobotsTXT = true
     [markup.goldmark.renderer]
       unsafe = true
 
-# Disable RSS site-wide (top-level)
-disableKinds = ["RSS"]
+# Disable kinds we don't use
+disableKinds = ["RSS", "taxonomy", "term"]
 
 # Force outputs for home to include HTML (prevents feed-only home)
 [outputs]
-  home = ["HTML", "JSON"]
+  home = ["HTML"]
+
+# Disable taxonomies
+[taxonomies]
