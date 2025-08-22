@@ -2,6 +2,7 @@ baseURL = 'https://kylejones200.github.io/ml4u/'
 languageCode = 'en-us'
 title = 'Machine Learning for Power & Utilities'
 cleanDestinationDir = true
+canonifyURLs = true
 
 # Pagination
 [pagination]
