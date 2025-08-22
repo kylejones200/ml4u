@@ -27,6 +27,17 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Diagnostics
+        run: |
+          hugo version
+          echo "--- repo root ---"
+          ls -la
+          echo "--- themes/blowfish ---"
+          ls -la themes || true
+          ls -la themes/blowfish || true
+          echo "--- hugo config params ---"
+          hugo config | sed -n '1,200p'
+
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
@@ -34,7 +45,7 @@ jobs:
           extended: true
 
       - name: Build
-        run: hugo --minify
+        run: hugo --minify -t blowfish
 
       - name: Verify build output
         run: |
