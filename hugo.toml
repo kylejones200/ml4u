@@ -13,3 +13,7 @@ enableRobotsTXT = true
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+
+# Force outputs for home to include HTML (prevents feed-only home)
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
