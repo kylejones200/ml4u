@@ -41,4 +41,4 @@ The steps outlined in this book provide a roadmap: start small, prove value, bui
 
 The future utility will be defined not by how many pilots it runs but by how seamlessly it integrates analytics into every corner of its operations, from the control room to the field to customer engagement. This transformation is underway. Those who embrace it will lead.
 
-The work begins now.
+The work begins now. Let's go!

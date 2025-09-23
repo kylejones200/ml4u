@@ -5,9 +5,9 @@
   Reads a sibling .py file from the same leaf bundle as the page and renders it as highlighted Python code.
 */}}
 
-{{ $file := .Get "file" }}
+{{ $file := or (.Get "file") .Page.Params.pyfile }}
 {{ if not $file }}
-  <div class="notice">pyfile shortcode: missing param 'file'. Example: {{`{{< pyfile file="script.py" >}}`}}</div>
+  <div class="notice">pyfile shortcode: missing param 'file' and no 'pyfile' in front matter. Example usage: {{`{{< pyfile file="script.py" >}}`}} or add to front matter: pyfile: "script.py"</div>
 {{ else }}
   {{ $from := or (int (.Get "from")) 1 }}
   {{ $to := int (or (.Get "to") 0) }}
@@ -33,3 +33,4 @@
     <div class="notice">pyfile: file not found: {{ $path }}</div>
   {{ end }}
 {{ end }}
+
