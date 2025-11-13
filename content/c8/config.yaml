@@ -1,0 +1,32 @@
+pv:
+  latitude: 30.27
+  longitude: -97.74
+  timezone: "US/Central"
+  altitude: 149
+  location_name: "Austin, TX"
+  start_date: "2022-06-01"
+  end_date: "2022-06-14"
+  surface_tilt: 25
+  surface_azimuth: 180
+
+weather:
+  temp_mean: 30
+  temp_std: 3
+  wind_min: 1
+  wind_max: 5
+
+sarima:
+  order: [1, 1, 1]
+  seasonal_order: [1, 1, 0, 24]
+  forecast_steps: 24
+
+plotting:
+  figsize: [12, 4]
+  colors:
+    pv: "black"
+    observed: "gray"
+    forecast: "black"
+  output_files:
+    pv: "chapter8_pv_output.png"
+    forecast: "chapter8_sarima_forecast.png"
+

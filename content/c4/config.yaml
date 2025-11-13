@@ -1,0 +1,32 @@
+data:
+  start_date: "2022-01-01"
+  periods: 8760  # 24*365 hours
+  base_load: 800
+  seasonal_amplitude: 150
+  daily_cycle_amplitude: 50
+  noise_std: 20
+
+arima:
+  order: [3, 1, 2]
+  forecast_steps: 168  # 24*7 = 1 week
+
+lstm:
+  input_chunk_length: 24
+  output_chunk_length: 24
+  training_length: 72
+  n_epochs: 20
+
+plotting:
+  figsize: [12, 4]
+  colors:
+    load: "black"
+    observed: "gray"
+    forecast: "black"
+  output_files:
+    load: "chapter4_load.png"
+    arima: "chapter4_arima.png"
+    lstm: "chapter4_lstm.png"
+
+model:
+  random_state: 42
+

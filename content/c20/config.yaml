@@ -1,31 +1,12 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: transformer-ml
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: transformer-ml
-  template:
-    metadata:
-      labels:
-        app: transformer-ml
-    spec:
-      containers:
-      - name: transformer-ml
-        image: transformer-ml:latest
-        ports:
-        - containerPort: 8000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: transformer-ml-svc
-spec:
-  selector:
-    app: transformer-ml
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8000
+simulation:
+  years: 10
+  start_year: 2024
+
+plotting:
+  figsize: [10, 6]
+  colors:
+    savings: "black"
+    outage: "gray"
+    forecast: "darkblue"
+  output_file: "chapter18_ai_kpi_trends.png"
+

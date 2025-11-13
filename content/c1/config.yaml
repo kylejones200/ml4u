@@ -1,0 +1,24 @@
+data:
+  days: 365
+  start_date: "2022-01-01"
+  base_temp: 20  # Average temperature in Celsius
+  temp_amplitude: 10  # Seasonal temperature variation
+  temp_noise_std: 3  # Daily temperature variability
+  base_load: 1000  # Base load in MW
+  temp_coef: 15  # Linear coefficient: MW per degree Celsius
+  temp_coef_squared: 0.5  # Quadratic term for U-shaped relationship
+  noise_std: 50  # Random noise in load
+
+model:
+  random_state: 42
+
+plotting:
+  figsize: [10, 6]
+  colors:
+    load: "black"
+    observed: "steelblue"
+    trend: "red"
+  output_files:
+    load_plot: "chapter1_load_plot.png"
+    regression_trend: "chapter1_regression_trend.png"
+

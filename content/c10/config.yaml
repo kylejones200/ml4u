@@ -1,0 +1,23 @@
+yolo:
+  model_path: "yolov8n.pt"
+  epochs: 30
+  imgsz: 640
+  batch: 16
+
+detection:
+  risk_distance: 50
+  gps_lat: 30.2672
+  gps_lon: -97.7431
+  gps_alt: 120
+
+paths:
+  dataset_yaml: "data/PLD/pld_vegetation.yaml"
+  sample_image: "data/PLD/images/test/sample_vegetation.jpg"
+
+plotting:
+  figsize_inference: [8, 8]
+  figsize_geospatial: [8, 8]
+  output_files:
+    vegetation: "chapter10_vegetation_detection.png"
+    geospatial: "chapter10_geospatial_risks.png"
+

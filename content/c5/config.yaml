@@ -1,0 +1,32 @@
+data:
+  samples: 2000
+
+model:
+  random_state: 42
+  test_size: 0.25
+  contamination: 0.05
+  n_estimators: 100
+
+sensor:
+  temp_mean: 60
+  temp_std: 5
+  vibration_mean: 0.2
+  vibration_std: 0.05
+  oil_pressure_mean: 25
+  oil_pressure_std: 3
+  load_mean: 800
+  load_std: 100
+
+plotting:
+  figsize_trends: [12, 5]
+  figsize_anomaly: [10, 4]
+  window_size: 200
+  colors:
+    temp: "black"
+    vibration: "gray"
+    normal: "black"
+    anomaly: "red"
+  output_files:
+    trends: "chapter5_sensor_trends.png"
+    anomaly: "chapter5_anomaly.png"
+

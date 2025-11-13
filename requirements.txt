@@ -1,0 +1,58 @@
+# Core scientific stack
+numpy
+pandas
+matplotlib
+scikit-learn
+statsmodels
+
+# Time series & forecasting
+prophet
+u8darts[darts]
+# Darts depends on torch; include explicitly
+torch
+
+# Visualization & images
+pillow
+
+# NLP
+spacy
+
+# Geospatial & shapely
+geopandas
+shapely
+
+# Computer vision / YOLO
+ultralytics
+
+# Energy/PV modeling
+pvlib
+
+# Streaming / Kafka
+kafka-python
+
+# Web APIs
+fastapi
+pydantic
+uvicorn
+
+# MLOps
+mlflow
+
+# Orchestration
+prefect
+
+# Clustering time series
+tslearn
+
+# Spark (used in computer vision script at repo root)
+pyspark
+
+# Utilities
+joblib
+
+# LLMs
+openai
+
+# Testing
+pytest
+pytest-cov

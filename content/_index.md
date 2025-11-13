@@ -16,8 +16,8 @@ Hands-on chapters and demos for forecasting, anomaly detection, asset health, NL
 ### Featured Chapters
 - Chapter 10: Computer Vision for Asset Inspection → [Open]({{< relref "c10" >}})
 - Chapter 11: NLP for Utility Documents → [Open]({{< relref "c11" >}})
-- Chapter 12: Experiment Tracking with MLflow → [Open]({{< relref "c12" >}})
-- Chapter 17: LLMs & Multimodal AI → [Open]({{< relref "c17" >}})
+- Chapter 12: LLMs & Multimodal AI → [Open]({{< relref "c12" >}})
+- Chapter 14: MLOps for Utilities → [Open]({{< relref "c14" >}})
 
 ### All Chapters
 - C1: Introduction → [Open]({{< relref "c1" >}})

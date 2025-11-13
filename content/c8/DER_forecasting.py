@@ -1,36 +1,55 @@
-"""
-Chapter 8: Renewable Integration and DER Forecasting
-Solar PV generation modeling using PVLib and forecasting with SARIMA.
-"""
+"""Chapter 8: Renewable Integration and DER Forecasting."""
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import yaml
+from pathlib import Path
 from pvlib import location, modelchain, pvsystem
 from pvlib.temperature import TEMPERATURE_MODEL_PARAMETERS
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 
+# Load config
+config_path = Path(__file__).parent / "config.yaml"
+with open(config_path) as f:
+    config = yaml.safe_load(f)
+
+
 def simulate_solar_pv():
-    """
-    Simulate solar PV output using PVLib for a 1MW system in Texas.
-    """
-    site = location.Location(latitude=30.27, longitude=-97.74, tz="US/Central", altitude=149, name="Austin, TX")
-    times = pd.date_range("2022-06-01", "2022-06-14", freq="H", tz=site.tz)
+    """Simulate solar PV output using PVLib for a 1MW system."""
+    site = location.Location(
+        latitude=config["pv"]["latitude"],
+        longitude=config["pv"]["longitude"],
+        tz=config["pv"]["timezone"],
+        altitude=config["pv"]["altitude"],
+        name=config["pv"]["location_name"]
+    )
+    times = pd.date_range(config["pv"]["start_date"], config["pv"]["end_date"], 
+                         freq="h", tz=site.tz)
 
-    # Clear-sky irradiance
     clearsky = site.get_clearsky(times)
-    temp_air = np.random.normal(30, 3, len(times))
-    wind_speed = np.random.uniform(1, 5, len(times))
+    temp_air = np.random.normal(config["weather"]["temp_mean"], 
+                                config["weather"]["temp_std"], len(times))
+    wind_speed = np.random.uniform(config["weather"]["wind_min"], 
+                                   config["weather"]["wind_max"], len(times))
 
-    # PV system configuration
     temp_params = TEMPERATURE_MODEL_PARAMETERS["sapm"]["open_rack_glass_glass"]
-    module = pvsystem.retrieve_sam("CECMod")["Canadian_Solar_CS5P_220M___2009_"]
-    inverter = pvsystem.retrieve_sam("cecinverter")["ABB__MICRO_0_25_I_OUTD_US_208__208V_"]
+    module_db = pvsystem.retrieve_sam("CECMod")
+    module_key = module_db.columns[0]
+    module = module_db[module_key]
+    inv_db = pvsystem.retrieve_sam("cecinverter")
+    inv_key = inv_db.columns[0]
+    inverter = inv_db[inv_key]
 
-    system = pvsystem.PVSystem(surface_tilt=25, surface_azimuth=180, module_parameters=module,
-                               inverter_parameters=inverter, temperature_model_parameters=temp_params)
+    system = pvsystem.PVSystem(
+        surface_tilt=config["pv"]["surface_tilt"],
+        surface_azimuth=config["pv"]["surface_azimuth"],
+        module_parameters=module,
+        inverter_parameters=inverter,
+        temperature_model_parameters=temp_params
+    )
 
-    mc = modelchain.ModelChain(system, site)
+    mc = modelchain.ModelChain(system, site, aoi_model="no_loss", spectral_model="no_loss")
     weather = pd.DataFrame({
         "ghi": clearsky["ghi"],
         "dni": clearsky["dni"],
@@ -41,46 +60,47 @@ def simulate_solar_pv():
 
     mc.run_model(weather)
     ac_power = mc.results.ac
-    df = pd.DataFrame({"timestamp": times, "AC_Power_kW": ac_power})
-    return df
+    return pd.DataFrame({"timestamp": times, "AC_Power_kW": ac_power})
+
 
 def plot_pv(df):
-    """
-    Plot PV output.
-    """
-    plt.figure(figsize=(12, 4))
-    plt.plot(df["timestamp"], df["AC_Power_kW"], color="black")
-    plt.xlabel("Time")
-    plt.ylabel("AC Power (kW)")
-    plt.title("Simulated Solar PV Output (Austin, TX)")
+    """Plot PV output."""
+    fig, ax = plt.subplots(figsize=config["plotting"]["figsize"])
+    ax.plot(df["timestamp"], df["AC_Power_kW"], color=config["plotting"]["colors"]["pv"])
+    ax.set_title("Solar PV AC Power (kW) - Simulated Output (Austin, TX)")
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
     plt.tight_layout()
-    plt.savefig("chapter8_pv_output.png")
-    plt.show()
+    plt.savefig(config["plotting"]["output_files"]["pv"])
+    plt.close()
+
 
 def sarima_forecast(df):
-    """
-    Forecast PV output using SARIMA (Statsmodels).
-    """
+    """Forecast PV output using SARIMA."""
     df = df.set_index("timestamp")
     ts = df["AC_Power_kW"].asfreq("H")
 
-    # Fit SARIMA model (daily seasonality: 24 hours)
-    model = SARIMAX(ts, order=(1, 1, 1), seasonal_order=(1, 1, 0, 24), enforce_stationarity=False, enforce_invertibility=False)
+    order = tuple(config["sarima"]["order"])
+    seasonal_order = tuple(config["sarima"]["seasonal_order"])
+    model = SARIMAX(ts, order=order, seasonal_order=seasonal_order,
+                   enforce_stationarity=False, enforce_invertibility=False)
     fit = model.fit(disp=False)
 
-    forecast_steps = 24  # 1 day ahead
-    forecast = fit.forecast(steps=forecast_steps)
+    forecast = fit.forecast(steps=config["sarima"]["forecast_steps"])
 
-    plt.figure(figsize=(12, 4))
-    plt.plot(ts[-48:], label="Observed (Last 2 Days)", color="gray")
-    plt.plot(forecast.index, forecast, label="SARIMA Forecast (Next 24h)", color="black")
-    plt.xlabel("Time")
-    plt.ylabel("AC Power (kW)")
-    plt.title("SARIMA Forecast of Solar PV Output")
-    plt.legend()
+    fig, ax = plt.subplots(figsize=config["plotting"]["figsize"])
+    ax.plot(ts[-48:], label="Observed (Last 2 Days)", 
+             color=config["plotting"]["colors"]["observed"])
+    ax.plot(forecast.index, forecast, label="SARIMA Forecast (Next 24h)", 
+             color=config["plotting"]["colors"]["forecast"])
+    ax.set_title("Solar PV AC Power (kW) - SARIMA Forecast vs Observed")
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.legend()
     plt.tight_layout()
-    plt.savefig("chapter8_sarima_forecast.png")
-    plt.show()
+    plt.savefig(config["plotting"]["output_files"]["forecast"])
+    plt.close()
+
 
 if __name__ == "__main__":
     df_pv = simulate_solar_pv()

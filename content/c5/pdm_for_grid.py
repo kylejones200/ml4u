@@ -1,28 +1,35 @@
-"""
-Chapter 5: Predictive Maintenance for Grid and Plant Assets
-Uses synthetic SCADA sensor data to detect anomalies and predict equipment failures.
-"""
+"""Chapter 5: Predictive Maintenance for Grid Assets."""
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import yaml
+from pathlib import Path
 from sklearn.ensemble import IsolationForest, RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, roc_auc_score
 from sklearn.preprocessing import StandardScaler
 
-def generate_synthetic_scada_data(samples=2000):
-    """
-    Generate synthetic SCADA data for transformer monitoring.
-    Features: temperature, vibration, oil pressure, load.
-    """
-    np.random.seed(42)
-    temp = np.random.normal(60, 5, samples)
-    vibration = np.random.normal(0.2, 0.05, samples)
-    oil_pressure = np.random.normal(25, 3, samples)
-    load = np.random.normal(800, 100, samples)
+# Load config
+config_path = Path(__file__).parent / "config.yaml"
+with open(config_path) as f:
+    config = yaml.safe_load(f)
 
-    # Simulate failures: elevated temp/vibration correlated with failures
+np.random.seed(config["model"]["random_state"])
+
+
+def generate_synthetic_scada_data():
+    """Generate synthetic SCADA data for transformer monitoring."""
+    samples = config["data"]["samples"]
+    temp = np.random.normal(config["sensor"]["temp_mean"], 
+                           config["sensor"]["temp_std"], samples)
+    vibration = np.random.normal(config["sensor"]["vibration_mean"], 
+                                 config["sensor"]["vibration_std"], samples)
+    oil_pressure = np.random.normal(config["sensor"]["oil_pressure_mean"], 
+                                    config["sensor"]["oil_pressure_std"], samples)
+    load = np.random.normal(config["sensor"]["load_mean"], 
+                           config["sensor"]["load_std"], samples)
+
     failure_prob = 1 / (1 + np.exp(-(0.05*(temp-65) + 8*(vibration-0.25))))
     failures = np.random.binomial(1, failure_prob)
 
@@ -34,52 +41,63 @@ def generate_synthetic_scada_data(samples=2000):
         "Failure": failures
     })
 
+
 def plot_sensor_trends(df):
-    """
-    Plot sample SCADA signals over time.
-    """
-    plt.figure(figsize=(12, 5))
-    plt.plot(df.index[:200], df["Temperature_C"][:200], label="Temperature (C)", color="black")
-    plt.plot(df.index[:200], df["Vibration_g"][:200], label="Vibration (g)", color="gray")
-    plt.xlabel("Time (Sample Index)")
-    plt.ylabel("Sensor Readings")
-    plt.title("Transformer Sensor Trends (Sample Window)")
-    plt.legend()
+    """Plot sample SCADA signals over time."""
+    window = config["plotting"]["window_size"]
+    fig, ax = plt.subplots(figsize=config["plotting"]["figsize_trends"])
+    ax.plot(df.index[:window], df["Temperature_C"][:window], 
+             label="Temperature (C)", color=config["plotting"]["colors"]["temp"])
+    ax.plot(df.index[:window], df["Vibration_g"][:window], 
+             label="Vibration (g)", color=config["plotting"]["colors"]["vibration"])
+    ax.set_title("Transformer Sensor Readings - Temperature (C) and Vibration (g)")
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.legend()
     plt.tight_layout()
-    plt.savefig("chapter5_sensor_trends.png")
-    plt.show()
+    plt.savefig(config["plotting"]["output_files"]["trends"])
+    plt.close()
+
 
 def anomaly_detection(df):
-    """
-    Apply Isolation Forest for anomaly detection.
-    """
+    """Apply Isolation Forest for anomaly detection."""
     features = df[["Temperature_C", "Vibration_g", "OilPressure_psi", "Load_kVA"]]
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(features)
 
-    model = IsolationForest(contamination=0.05, random_state=42)
+    model = IsolationForest(
+        contamination=config["model"]["contamination"],
+        random_state=config["model"]["random_state"]
+    )
     preds = model.fit_predict(X_scaled)
     anomalies = np.where(preds == -1)[0]
 
-    plt.figure(figsize=(10, 4))
-    plt.scatter(df.index, df["Temperature_C"], c="black", label="Normal", alpha=0.5)
-    plt.scatter(df.index[anomalies], df["Temperature_C"].iloc[anomalies], c="red", label="Anomaly")
-    plt.xlabel("Sample")
-    plt.ylabel("Temperature (C)")
-    plt.title("Anomaly Detection in Transformer Sensor Data")
-    plt.legend()
+    fig, ax = plt.subplots(figsize=config["plotting"]["figsize_anomaly"])
+    ax.scatter(df.index, df["Temperature_C"], c=config["plotting"]["colors"]["normal"], 
+                label="Normal", alpha=0.5)
+    ax.scatter(df.index[anomalies], df["Temperature_C"].iloc[anomalies], 
+                c=config["plotting"]["colors"]["anomaly"], label="Anomaly")
+    ax.set_title("Temperature (C) - Anomaly Detection in Transformer Sensor Data")
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.legend()
     plt.tight_layout()
-    plt.savefig("chapter5_anomaly.png")
-    plt.show()
+    plt.savefig(config["plotting"]["output_files"]["anomaly"])
+    plt.close()
+
 
 def failure_prediction(df):
-    """
-    Train Random Forest to classify failure risk.
-    """
+    """Train Random Forest to classify failure risk."""
     X = df[["Temperature_C", "Vibration_g", "OilPressure_psi", "Load_kVA"]]
     y = df["Failure"]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=config["model"]["test_size"], 
+        random_state=config["model"]["random_state"], stratify=y
+    )
+    model = RandomForestClassifier(
+        n_estimators=config["model"]["n_estimators"],
+        random_state=config["model"]["random_state"]
+    )
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     y_prob = model.predict_proba(X_test)[:, 1]
@@ -87,6 +105,7 @@ def failure_prediction(df):
     print("Failure Prediction Report:")
     print(classification_report(y_test, y_pred, target_names=["Healthy", "Failure"]))
     print(f"ROC AUC Score: {roc_auc_score(y_test, y_prob):.3f}")
+
 
 if __name__ == "__main__":
     df_scada = generate_synthetic_scada_data()

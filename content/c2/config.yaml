@@ -1,0 +1,16 @@
+data:
+  resample_freq: "h"
+  scada_samples: 1440
+  scada_freq: "min"
+  nominal_frequency: 60.0
+  frequency_noise: 0.02
+
+plotting:
+  figsize: [12, 4]
+  colors:
+    consumption: "black"
+    frequency: "black"
+  output_files:
+    smart_meter: "chapter2_smart_meter_plot.png"
+    scada: "chapter2_scada_frequency.png"
+
