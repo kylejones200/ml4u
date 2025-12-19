@@ -1,0 +1,183 @@
+model:
+  random_state: 42
+  test_size: 0.2
+  n_estimators: 100
+  n_clusters: 3
+  contamination: 0.1
+  learning_rate: 0.1
+  max_depth: 3
+
+data:
+  start_date: "2023-01-01"
+  days: 365
+  periods: 8760
+  base_temp: 20
+  temp_amplitude: 10
+  temp_noise_std: 3
+  base_load: 1000
+  temp_coef: 15
+  temp_coef_squared: 0.5
+  noise_std: 50
+  seasonal_amplitude: 200
+  daily_cycle_amplitude: 150
+  regression_samples: 200
+  classification_samples: 300
+  samples: 1000
+  customers: 100
+  n_assets: 10
+  n_points: 100
+  interval_seconds: 60
+  load_periods: 168
+  maintenance_samples: 500
+  outage_samples: 500
+  anomaly_rate: 0.05
+  high_load_rate: 0.1
+
+regression:
+  temp_mean: 20
+  temp_std: 8
+  base_load: 1000
+  temp_coef: 15
+  noise_std: 50
+
+classification:
+  age_min: 1
+  age_max: 30
+  load_min: 50
+  load_max: 500
+
+clustering:
+  cluster_means: [2, 4, 6]
+  cluster_stds: [0.5, 0.8, 1.0]
+  samples_per_cluster: 50
+
+arima:
+  order: [2, 1, 2]
+  forecast_steps: 168
+
+lstm:
+  input_chunk_length: 24
+  output_chunk_length: 24
+  training_length: 168
+  n_epochs: 10
+
+plotting:
+  figsize: [10, 6]
+  figsize_trends: [12, 6]
+  figsize_anomaly: [10, 6]
+  figsize_regression: [8, 6]
+  figsize_clustering: [10, 6]
+  figsize_inference: [10, 8]
+  figsize_geospatial: [10, 8]
+  window_size: 100
+  output_file: "../images/c9_chapter9_dr_clusters.png"
+  roi_output_file: "../images/c19_chapter16_roi_analysis.png"
+  trends_output_file: "../images/c20_chapter18_ai_kpi_trends.png"
+  output_files:
+    load_plot: "../images/c1_chapter1_load_plot.png"
+    regression_trend: "../images/c1_chapter1_regression_trend.png"
+    regression: "../images/c3_chapter3_regression.png"
+    clustering: "../images/c3_chapter3_clustering.png"
+    load: "../images/c4_chapter4_load.png"
+    arima: "../images/c4_chapter4_arima.png"
+    lstm: "../images/c4_chapter4_lstm.png"
+    trends: "../images/c5_chapter5_sensor_trends.png"
+    anomaly: "../images/c5_chapter5_anomaly.png"
+    vegetation: "../images/c10_vegetation.png"
+    geospatial: "../images/c10_geospatial.png"
+    pv: "../images/c8_pv.png"
+    forecast: "../images/c8_forecast.png"
+    advanced_forecasting: "../images/c4_advanced_forecasting.png"
+    causal_inference: "../images/c27_causal_inference.png"
+    multi_task: "../images/c28_multi_task.png"
+    renewable_finance: "../images/c8_renewable_finance.png"
+
+roi_plotting:
+  output_file: "../images/c19_chapter16_roi_analysis.png"
+
+trends_plotting:
+  output_file: "../images/c20_chapter18_ai_kpi_trends.png"
+
+sensor:
+  temp_mean: 60
+  temp_std: 5
+  vibration_mean: 0.2
+  vibration_std: 0.05
+  oil_pressure_mean: 50
+  oil_pressure_std: 5
+  load_mean: 100
+  load_std: 20
+
+weather:
+  wind_mean: 15
+  wind_std: 5
+  rainfall_mean: 50
+  rainfall_std: 15
+  tree_density_min: 0.2
+  tree_density_max: 0.8
+  asset_age_min: 5
+  asset_age_max: 40
+
+roi:
+  analysis_years: 10
+  discount_rate: 0.10
+
+costs:
+  data_prep: 50000
+  model_dev: 100000
+  infrastructure: 75000
+  personnel: 150000
+  integration: 50000
+  training: 25000
+  compliance: 30000
+  monitoring_annual: 30000
+  retraining_annual: 20000
+  support_annual: 40000
+
+benefits:
+  annual_outages: 50
+  outage_reduction_pct: 20
+  cost_per_outage_hour: 10000
+  avg_outage_hours: 4
+  o_m_savings_annual: 200000
+  capital_deferral_annual: 150000
+
+paths:
+  shapefile: ""
+  dataset_yaml: ""
+  sample_image: ""
+
+kafka:
+  topic: "scada_telemetry"
+  bootstrap_servers: "localhost:9092"
+
+api:
+  host: "127.0.0.1"
+  port: 8000
+
+mlflow:
+  model_name: "transformer_failure_model"
+
+detection:
+  risk_distance: 50
+  gps_lat: 30.25
+  gps_lon: -97.75
+  gps_alt: 200
+
+pv:
+  latitude: 30.25
+  longitude: -97.75
+  timezone: "America/Chicago"
+  altitude: 200
+  location_name: "Austin, TX"
+  start_date: "2023-01-01"
+  end_date: "2023-12-31"
+
+sarima:
+  order: [1, 1, 1]
+  seasonal_order: [1, 1, 1, 24]
+  forecast_steps: 24
+
+simulation:
+  years: 10
+  start_year: 2024
