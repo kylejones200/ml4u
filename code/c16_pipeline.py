@@ -79,7 +79,7 @@ def health_check():
 
 if __name__ == "__main__":
     if os.environ.get("ML4U_CI") == "1":
-        logger.info("ML4U_CI=1: not starting Uvicorn")
-              "API is available when you run this script locally without ML4U_CI.")
+        logger.info("ML4U_CI=1: not starting Uvicorn. "
+                    "API is available when you run this script locally without ML4U_CI.")
     else:
         uvicorn.run(app, host=config["api"]["host"], port=config["api"]["port"])

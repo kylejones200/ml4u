@@ -51,6 +51,9 @@ joblib
 # LLMs
 openai
 
+# Fairness metrics
+fairlearn
+
 # Testing
 pytest
 pytest-cov
