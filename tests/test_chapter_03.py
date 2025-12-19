@@ -11,12 +11,12 @@ import numpy as np
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.cluster import KMeans
 
-# Add chapter directory to path
-CHAPTER_DIR = Path(__file__).parent.parent / "content" / "c3"
-sys.path.insert(0, str(CHAPTER_DIR))
+# Add code directory to path
+CODE_DIR = Path(__file__).parent.parent / "code"
+sys.path.insert(0, str(CODE_DIR))
 
 # Import the actual book code
-import ML4U
+import c3_ML4U as ML4U
 
 
 class TestChapter03:

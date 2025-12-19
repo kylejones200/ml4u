@@ -7,12 +7,12 @@ import sys
 from pathlib import Path
 import pytest
 
-# Add chapter directory to path
-CHAPTER_DIR = Path(__file__).parent.parent / "content" / "c10"
-sys.path.insert(0, str(CHAPTER_DIR))
+# Add code directory to path
+CODE_DIR = Path(__file__).parent.parent / "code"
+sys.path.insert(0, str(CODE_DIR))
 
 # Import the actual book code
-import computervision
+import c10_computervision as computervision
 
 
 class TestChapter10:

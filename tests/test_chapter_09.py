@@ -10,12 +10,12 @@ import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
 
-# Add chapter directory to path
-CHAPTER_DIR = Path(__file__).parent.parent / "content" / "c9"
-sys.path.insert(0, str(CHAPTER_DIR))
+# Add code directory to path
+CODE_DIR = Path(__file__).parent.parent / "code"
+sys.path.insert(0, str(CODE_DIR))
 
 # Import the actual book code
-import demand_response
+import c9_demand_response as demand_response
 
 
 class TestChapter09:

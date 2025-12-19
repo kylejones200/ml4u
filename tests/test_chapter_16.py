@@ -7,17 +7,17 @@ import sys
 from pathlib import Path
 import pytest
 
-# Add chapter directory to path
-CHAPTER_DIR = Path(__file__).parent.parent / "content" / "c16"
-sys.path.insert(0, str(CHAPTER_DIR))
+# Add code directory to path
+CODE_DIR = Path(__file__).parent.parent / "code"
+sys.path.insert(0, str(CODE_DIR))
 
 
 class TestChapter16:
     """Test Chapter 16 code functionality."""
     
     def test_module_exists(self):
-        """Test that chapter directory exists."""
-        assert CHAPTER_DIR.exists()
-        # Chapter 16 will be replaced with new content
-        # This is a placeholder test
+        """Test that chapter code exists."""
+        # Check if c16_pipeline exists
+        pipeline_file = CODE_DIR / "c16_pipeline.py"
+        assert pipeline_file.exists(), "c16_pipeline.py should exist"
 

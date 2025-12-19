@@ -10,12 +10,12 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-# Add chapter directory to path
-CHAPTER_DIR = Path(__file__).parent.parent / "content" / "c1"
-sys.path.insert(0, str(CHAPTER_DIR))
+# Add code directory to path
+CODE_DIR = Path(__file__).parent.parent / "code"
+sys.path.insert(0, str(CODE_DIR))
 
 # Import the actual book code
-import intro_to_ML
+import c1_intro_to_ML as intro_to_ML
 
 
 class TestChapter01:

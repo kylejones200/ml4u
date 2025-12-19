@@ -8,12 +8,12 @@ from pathlib import Path
 import pytest
 import pandas as pd
 
-# Add chapter directory to path
-CHAPTER_DIR = Path(__file__).parent.parent / "content" / "c14"
-sys.path.insert(0, str(CHAPTER_DIR))
+# Add code directory to path
+CODE_DIR = Path(__file__).parent.parent / "code"
+sys.path.insert(0, str(CODE_DIR))
 
 # Import the actual book code
-import casestudy
+import c15_casestudy as casestudy
 
 
 class TestChapter14:

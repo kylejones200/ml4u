@@ -9,12 +9,12 @@ import pytest
 import pandas as pd
 import numpy as np
 
-# Add chapter directory to path
-CHAPTER_DIR = Path(__file__).parent.parent / "content" / "c8"
-sys.path.insert(0, str(CHAPTER_DIR))
+# Add code directory to path
+CODE_DIR = Path(__file__).parent.parent / "code"
+sys.path.insert(0, str(CODE_DIR))
 
 # Import the actual book code
-import DER_forecasting
+import c8_DER_forecasting as DER_forecasting
 
 
 class TestChapter08:

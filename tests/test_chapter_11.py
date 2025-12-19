@@ -8,12 +8,12 @@ from pathlib import Path
 import pytest
 import pandas as pd
 
-# Add chapter directory to path
-CHAPTER_DIR = Path(__file__).parent.parent / "content" / "c11"
-sys.path.insert(0, str(CHAPTER_DIR))
+# Add code directory to path
+CODE_DIR = Path(__file__).parent.parent / "code"
+sys.path.insert(0, str(CODE_DIR))
 
 # Import the actual book code
-import nlp4u
+import c11_nlp4u as nlp4u
 
 
 class TestChapter11:
