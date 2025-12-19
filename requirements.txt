@@ -45,9 +45,6 @@ prefect
 # Clustering time series
 tslearn
 
-# Spark (used in computer vision script at repo root)
-pyspark
-
 # Utilities
 joblib
 
