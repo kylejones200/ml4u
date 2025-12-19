@@ -1,0 +1,166 @@
+\chapter{Data Preparation}\label{ch:data}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you'll understand why data preparation is where most utility ML projects die—not because the models are wrong, but because the data isn't ready. You'll master three fundamental tasks: cleaning, resampling, and integration. You'll learn to handle the data quality issues I've seen kill projects: missing values, timezone mismatches, and unit inconsistencies. Most importantly, you'll see how data preparation quality directly impacts model performance. Garbage in, garbage out—it's that simple.
+
+
+\subsection{The Business Problem: Data Without Insight}\label{the-business-problem-data-without-insight}
+
+A utility has 4.5 million smart meters, each reporting consumption every 15 minutes, yet maintenance crews still lack predictive insights. This is the data-rich but insight-poor problem.
+
+Utilities are data-rich but insight-poor. Every second, power grids generate vast amounts of telemetry from sensors, meters, and control systems. Smart meters report household consumption in 15-minute intervals, SCADA systems collect voltages and currents across substations and feeders, Phasor Measurement Units stream high-resolution synchrophasor data, and Enterprise Asset Management platforms house detailed records for transformers, breakers, and other field equipment. Yet despite these torrents of data, many utilities still rely on manual processes, siloed systems, and static reports.
+
+Utilities have all the data they need, but it's locked in silos. The root issue is fragmentation: Operational Technology systems like SCADA are often isolated from Information Technology environments that host enterprise and market data. AMI data may reside in separate customer information systems, while maintenance records might be buried in work order logs. Integrating these disparate streams is cumbersome and often requires bespoke ETL pipelines. As a result, much of the data sits unused, limiting its value for analytics, machine learning, and decision support.
+
+This creates tangible business problems: maintenance crews lack predictive insights because equipment health data remains disconnected from condition monitoring sensors; grid operators cannot fully leverage weather and demand data together to anticipate loading risks; regulatory compliance reporting is tedious with data for audits scattered across incompatible formats. The cost of inefficiency is high—missed opportunities to optimize investments, reduced outages, and improved customer satisfaction all hang in the balance.
+
+The problem isn't that utilities lack data. The data lives in different systems. They don't talk to each other. Nobody has time to build the bridges.
+
+
+\subsection{The Analytics Solution: Preparing Data for Machine Learning}\label{the-analytics-solution-preparing-data-for-machine-learning}
+
+Analytics begins with data readiness. To make machine learning work for utilities, data must be accessible, reliable, and modeled in ways that reflect grid realities. This chapter focuses on the mechanics of preparing utility data for analysis.
+
+Data cleaning is where projects stall. Utility data is often noisy, containing gaps, duplicates, or faulty readings. Sensors malfunction, meters fail, and logs contain inconsistent timestamps. Cleaning requires handling missing values, removing erroneous spikes, and reconciling mismatched units or formats. Teams spend weeks just figuring out that one system reports in kW while another uses MW—simple unit mismatches break everything downstream.
+
+Resampling and alignment matter because utility datasets operate at different granularities—AMI data may be every 15 minutes, SCADA readings every 4 seconds, weather data hourly. Aligning these time series to common intervals allows joint analysis, often involving aggregation (summing sub-minute SCADA readings to hourly values) or interpolation (filling short gaps in time series). The key is choosing the right granularity for your use case: too fine and you're drowning in data, too coarse and you lose signal.
+
+Feature integration is where meaningful analytics emerges. Weather impacts demand, asset age influences failure rates, and vegetation encroachment correlates with storm outages. Joining these datasets requires careful handling of time zones, coordinate systems for geospatial joins, and equipment identifiers across systems. This is where the organizational silos really show up—different teams use different naming conventions, and you spend more time mapping IDs than building models.
+
+Modern utility analytics platforms often use columnar storage formats like Parquet or Delta Lake for time series data. These formats provide efficient compression, schema evolution, and time travel capabilities. I'm bullish on Delta Lake for production systems—the time travel feature alone has saved me multiple times when we needed to debug what data a model actually saw.
+
+While this chapter focuses on data preparation workflows, utilities should consider these storage formats when building production analytics platforms. We cover this in Chapter 20.
+
+The scale challenge is real. Hydro-Québec, the world's third largest hydroelectric utility, runs an application called Octave that about 1,000 technicians and engineers use daily to analyze smart meter data from 4.5 million meters across Quebec. As adoption grew, they hit a wall: the backend needed to handle over 1 trillion data points while keeping interactive analytics responsive. They migrated to a modern data platform that handles the scale, governance, and security requirements.
+
+Advanced preprocessing techniques are essential—the Hampel filter for outlier detection, for example—and are essential for working with smart meter data at scale \cite{brudermueller2023smart}. These methods enable utilities to handle data quality issues systematically without manually inspecting millions of time series.
+
+Quebec is massive—about the size of Alaska—and their hydroelectric generation sites are often far from population centers, requiring very long transmission lines. Hydro-Québec actually pioneered 735 kV AC transmission lines back in the 1960s. The migration enabled them to support performant interactive analytics at scale, running complex ETL processes in parallel. The key factors that made it work were subject matter expertise, operational autonomy, code quality for maintainability, and proactive vendor support. When you're dealing with 4.5 million meters and 1,000 daily users, you need both scalable storage and compute—there's no way around it.
+
+By addressing these steps systematically, utilities can unlock the full value of their data. Properly prepared datasets feed into machine learning models that predict failures, forecast load, and support data-driven investment planning. This work is unglamorous—nobody gets excited about data cleaning—but do it anyway. It's the foundation everything else sits on.
+
+
+\subsection{From Raw Records to Actionable Signals}\label{from-raw-records-to-actionable-signals}
+
+A transformer monitoring example shows how integration works. SCADA data may include transformer load and oil temperature, while EAM holds the installation date and maintenance history. By joining these, we can calculate load-to-age stress factors, compare them across similar units, and flag transformers at higher risk of failure. Without integrated data, such insights remain invisible.
+
+A storm readiness example shows another integration case. Outage records stored in OMS systems can be combined with feeder vegetation data and historical weather records. By cleaning and aligning these datasets, we can train models that predict which circuits are most likely to fail during high winds, directly informing crew staging and vegetation management priorities.
+
+These cases highlight a recurring theme: data silos hide patterns that cross organizational boundaries. Preparing data for analytics is as much about breaking down silos as it is about technical preprocessing.
+
+
+\subsection{Common Data Quality Issues in Utilities}\label{common-data-quality-issues-in-utilities}
+
+Before diving into the code, understand the data quality problems that kill projects. SCADA systems may drop readings during communication failures, creating missing timestamps. AMI data might use local time while SCADA uses UTC, causing timezone inconsistencies. Some systems report in kW while others use MW, creating unit mismatches. Over time, sensors may report values that drift from true measurements, ETL processes sometimes create duplicate entries, and faulty sensors can produce extreme values that skew analysis.
+
+Teams spend weeks debugging models, only to discover that the ``anomalies'' they were detecting were actually timezone mismatches. One project I worked on had SCADA data in UTC and AMI data in local time—nobody noticed until we tried to join them. The model was technically correct; it was just learning from misaligned data.
+
+The code below demonstrates how to identify and handle these issues systematically. Trust me, it's worth the upfront effort.
+
+
+\subsection{Data Preparation Workflow}\label{data-preparation-workflow}
+
+We walk through a complete data preparation workflow for utility data, showing you two common data sources: smart meter (AMI) data and SCADA telemetry. This is the kind of work that happens before the exciting ML modeling—it's what makes or breaks your project.
+
+We load and clean smart meter data to prepare it for analysis.
+
+\% Code file not found: data\_for\_power\_and\_utilities.py
+
+This shows how the \texttt{load\_smart\_meter\_data()} function reads CSV files with consumption data, while the \texttt{clean\_and\_resample()} function handles missing values and resamples to hourly intervals for consistency. This is essential because different utility systems operate at different frequencies—in practice, you might have AMI data every 15 minutes, SCADA every 4 seconds, and weather data hourly. You need to align them to a common interval, and hourly is usually a good starting point.
+
+We visualize the data to identify patterns and quality issues.
+
+\% Code file not found: data\_for\_power\_and\_utilities.py
+
+
+For smart meter data with multiple days, heatmap visualizations reveal patterns that line plots miss. A heatmap shows consumption by time of day (rows) and date (columns), making daily cycles, weekly patterns, and anomalous days immediately visible \cite{brudermueller2023smart}.
+
+\% Code file not found: data\_for\_power\_and\_utilities.py
+
+
+We generate synthetic grid frequency telemetry to simulate SCADA data.
+
+\% Code file not found: data\_for\_power\_and\_utilities.py
+
+This shows how SCADA systems collect real-time grid measurements. This function simulates frequency data around the nominal 60 Hz, including small variations that indicate grid stability. In a real system, you'd pull this from your SCADA historian, but the principles are the same.
+
+We visualize the SCADA frequency data to monitor grid health.
+
+\% Code file not found: data\_for\_power\_and\_utilities.py
+
+
+The complete, runnable script is at \texttt{content/c2/data\_for\_power\_and\_utilities.py}. Run it, modify it, break it. That's how you learn.
+
+
+\subsection{Outlier Detection with Hampel Filter}\label{outlier-detection-with-hampel-filter}
+
+Smart meter data often contains outliers from meter malfunctions, communication errors, or anomalous consumption events. These outliers can skew statistical analysis and break machine learning models. The Hampel filter is a robust outlier detection method that uses median absolute deviation (MAD) instead of standard deviation, making it less sensitive to outliers than traditional z-score methods.
+
+The Hampel filter works by computing a rolling median and MAD over a sliding window. Points that deviate more than a threshold (typically 3 standard deviations) are flagged as outliers and replaced with the median value. This approach preserves the temporal structure of the data while removing spurious values.
+
+We apply the Hampel filter to detect and remove outliers from smart meter data.
+
+\% Code file not found: data\_for\_power\_and\_utilities.py
+
+This shows how the filter is particularly effective for smart meter data because it adapts to local patterns in consumption. A spike that might be normal during peak hours could be flagged as an outlier during low-consumption periods—exactly the behavior we want. The filter parameters (window size and sigma threshold) can be tuned based on data resolution and expected variability.
+
+In practice, I've seen Hampel filters reduce forecast errors by 5-10\%. This happens simply by cleaning outliers before modeling. The key is choosing the right window size. Too small and you remove legitimate peaks. Too large and you miss local anomalies.
+
+
+\subsection{Baseload Estimation}\label{baseload-estimation}
+
+Baseload represents the minimum continuous consumption from always-on devices like refrigerators, routers, DVRs, and standby appliances. Separating baseload from variable consumption helps utilities understand customer behavior, identify efficiency opportunities, and improve load disaggregation. Baseload estimation is particularly useful for demand response targeting because it indicates how much consumption can realistically be shifted \cite{brudermueller2023smart}.
+
+The estimation method sorts consumption values and finds the first value above mean + 3*std of the lowest consumption periods, identifying the threshold between minimal consumption (baseload) and active usage.
+
+We estimate baseload to separate always-on consumption from variable usage.
+
+\% Code file not found: data\_for\_power\_and\_utilities.py
+
+This shows how baseload varies by customer and season—in summer, HVAC baseload might be higher, while in winter, heating systems add to baseload. Understanding these patterns helps utilities design better demand response programs and identify customers with high flexibility potential.
+
+
+\subsection{Feature Extraction from Time Series}\label{feature-extraction-from-time-series}
+
+Smart meter data contains rich temporal patterns that machine learning models can exploit. Feature extraction transforms raw consumption data into meaningful characteristics that capture daily cycles, periodic behavior, and consumption signatures.
+
+Fourier Transformations convert time series data from the time domain to the frequency domain, revealing hidden periodic patterns that are difficult to identify through direct observation. The Fast Fourier Transform (FFT) decomposes complex consumption signals into their fundamental frequency components, enabling utilities to distinguish between short-term fluctuations and longer-term trends.
+
+We apply FFT to reveal dominant frequencies in consumption patterns.
+
+\% Code file not found: data\_for\_power\_and\_utilities.py
+
+This shows how FFT reveals dominant frequencies in consumption patterns: daily cycles show up as peaks at 1/24 cycles per hour, and weekly patterns appear at 1/168 cycles per hour. This frequency-domain analysis helps identify periodic behavior that time-domain analysis might miss, such as distinguishing genuine consumption cycles from random noise.
+
+FFT can also filter noise from sensor data, removing high-frequency noise from measurement errors or communication issues while preserving essential consumption patterns. This is particularly valuable for low-resolution smart meter data where noise can mask subtle consumption signatures.
+
+Fourier terms are powerful features for machine learning models—they're sine and cosine components of seasonal periods. Unlike raw datetime features, Fourier terms explicitly encode periodic behavior, helping models learn seasonal patterns more effectively. For hourly data, Fourier terms with 24-hour and 168-hour periods capture daily and weekly cycles, which are essential for accurate load forecasting.
+
+We create Fourier terms to encode periodic patterns for machine learning models.
+
+\% Code file not found: data\_for\_power\_and\_utilities.py
+
+This shows how peak detection in consumption distributions identifies characteristic consumption levels that may represent specific appliances or usage states—a peak at 1.5 kWh might indicate a dishwasher cycle, while a peak at 0.3 kWh could represent a refrigerator compressor. These features are valuable for non-intrusive load monitoring and appliance detection \cite{brudermueller2023smart}.
+
+We detect peaks in consumption distributions to identify appliance signatures.
+
+\% Code file not found: data\_for\_power\_and\_utilities.py
+
+This shows how feature extraction is often the difference between a model that works and one that doesn't. Raw consumption values contain patterns, but extracted features make those patterns explicit for machine learning algorithms. These techniques are particularly valuable when working with low-resolution smart meter data where individual appliance signatures are harder to distinguish.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Data fragmentation is the primary barrier. Utilities have abundant data, but it's scattered across IT and OT systems that don't communicate effectively. Cleaning handles missing and erroneous data, resampling aligns time series, and integration joins multiple sources—these form the foundation of utility analytics.
+
+Time alignment matters because different utility systems operate at different frequencies (seconds to minutes to hours), and resampling to common intervals enables joint analysis.
+
+Data quality determines model quality—garbage in, garbage out. It's that simple. Teams spend months building sophisticated models, only to realize later that their data had timezone mismatches and unit inconsistencies. Investing time in data preparation pays dividends by improving model accuracy and building operational trust.
+
+This work is boring—nobody gets excited about data cleaning—but it's the foundation everything else sits on. Do it right, and your models will work. Skip it, and you'll spend weeks debugging problems that could have been caught in an afternoon.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 3, we'll apply machine learning fundamentals—regression, classification, and clustering—to utility use cases. You'll see how clean, well-prepared data enables these techniques to deliver actionable insights. The models are the fun part, but they only work if the data is ready.

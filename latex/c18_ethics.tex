@@ -1,0 +1,102 @@
+\chapter{Ethics and Governance}\label{ch:ethics}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand why ethics and governance are critical for utility AI deployment. You'll learn to perform fairness audits to detect bias across different subgroups. You'll see how explainability techniques like SHAP help interpret model decisions. You'll recognize regulatory frameworks such as NERC and state PUCs that govern utility AI. You'll build governance processes that ensure models are auditable and compliant.
+
+
+\subsection{The Business Problem: Balancing Innovation with Responsibility}\label{the-business-problem-balancing-innovation-with-responsibility}
+
+A utility deployed a customer segmentation model that inadvertently targeted certain neighborhoods more than others—not because of bias in the algorithm, but because of bias in the training data. The model learned patterns that reflected historical inequities. That's why fairness audits matter.
+
+As utilities adopt artificial intelligence and machine learning, they face a growing need to ensure that these technologies are deployed responsibly. Decisions driven by models can influence grid investments, maintenance priorities, pricing strategies, and even customer interactions. If these models are opaque or biased, they risk undermining trust, attracting regulatory scrutiny, or producing inequitable outcomes.
+
+For example, predictive maintenance models might inadvertently deprioritize assets in rural areas that lack historical sensor data. Customer segmentation algorithms could unintentionally reinforce inequities by targeting certain neighborhoods more aggressively for programs or rate changes. In a regulated industry where transparency and fairness are paramount, such risks must be managed deliberately.
+
+A utility deployed a customer segmentation model that inadvertently targeted certain neighborhoods more than others. Not because of bias in the algorithm, but because of bias in the training data. The model learned patterns that reflected historical inequities. That's why fairness audits matter.
+
+SDG\&E is taking this a step further with their Community Impact Platform. They're using digital twin technology, AI, and advanced analytics to promote decarbonization in vulnerable communities that are often disproportionately affected by pollution and climate change. The platform combines community data with operational data, bringing community impact front and center in decision-making. They have an innovation framework with three phases: learn, prove, scale. They test 10-15 emerging technologies every year, hoping one or two will fundamentally transform how they operate. The learn phase is six to eight weeks—does the technology solve the business problem? How does it fit within architecture and culture? The prove phase is straightforward: what's the cost and what's the value? But the value isn't just financial—it's about maximizing decarbonization efforts and increasing equity. That's how you build systems that serve everyone, not just the communities that historically had better data or more resources.
+
+Utilities also operate under strict compliance frameworks. Regulatory agencies demand explainability and auditability for operational tools. Those affecting system reliability or customer billing are examples. The integration of AI raises questions about how to verify model decisions and ensure alignment with established standards.
+
+
+\subsection{The Analytics Solution: Building Trustworthy AI}\label{the-analytics-solution-building-trustworthy-ai}
+
+Ethical and regulatory considerations must be built into utility analytics from the start. This involves incorporating fairness checks, explainability tools, and governance mechanisms into machine learning workflows.
+
+Fairness audits evaluate how models perform across different subgroups. For example, a predictive maintenance model can be assessed to ensure it treats urban and rural assets consistently regardless of differences in data availability. Explainability methods, such as SHAP values, help engineers and regulators understand why a model made a particular prediction, fostering confidence in its outputs.
+
+Governance frameworks document the data, code, and training process behind every model version, creating a clear lineage for audits. Integrated monitoring ensures that deployed models are continually evaluated for drift or performance degradation. These practices align with regulatory demands and build internal confidence that AI-driven tools are reliable and equitable.
+
+
+\subsection{Understanding SHAP (SHapley Additive exPlanations)}\label{understanding-shap-shapley-additive-explanations}
+
+SHAP stands for SHapley Additive exPlanations. It's a method for explaining individual model predictions. It answers which features contributed most to a specific prediction and by how much.
+
+How SHAP works: it calculates the contribution of each feature to a prediction using game theory through Shapley values to fairly allocate contributions, and it provides both global explanations (showing overall feature importance) and local explanations (for each prediction).
+
+For utilities, engineers can see why a transformer was flagged (temperature contributing +0.3 to failure risk, for example), regulators can verify that models use appropriate factors, and operators can trust predictions when they understand the reasoning.
+
+The code focuses on fairness, but production systems should also include SHAP or similar explainability methods.
+
+
+\subsection{Regulatory Frameworks for Utility AI}\label{regulatory-frameworks-for-utility-ai}
+
+Utilities must comply with multiple regulatory requirements: NERC (North American Electric Reliability Corporation) sets reliability standards that may require documentation of operational tools, state PUCs (Public Utility Commissions) govern rate-setting and service quality regulations, FERC (Federal Energy Regulatory Commission) regulates market operations and transmission, and data privacy laws (GDPR, CCPA, and state privacy laws) govern customer data.
+
+AI-specific considerations include explainability (regulators may require explanations for decisions affecting customers or reliability), auditability (complete records of model versions, training data, and decisions), fairness (ensuring models don't discriminate against protected groups), and transparency (public disclosure of how AI is used in rate-setting or service delivery).
+
+
+\subsection{Model Documentation Requirements}\label{model-documentation-requirements}
+
+For regulatory compliance, utilities should document the model purpose (what problem it solves), training data (sources, time periods, and preprocessing steps), model architecture (algorithm, hyperparameters, and version), performance metrics (accuracy, precision, and recall on test data), limitations (known issues, edge cases, and assumptions), deployment details (where it's used, how often it's retrained, and the monitoring approach), and a change log (recording the history of model updates and rationale).
+
+This documentation supports audits and demonstrates due diligence in model development and deployment.
+
+
+\subsection{Benefits for Utilities and Stakeholders}\label{benefits-for-utilities-and-stakeholders}
+
+Embedding ethics and governance in AI deployment strengthens regulatory compliance, reduces reputational risk, and helps utilities navigate public and political scrutiny (rate design, service prioritization, and resource allocation, for example). Transparent models are easier to explain to regulators, boards, and customers, reducing friction and accelerating adoption.
+
+Responsible AI also supports long-term operational resilience. Monitoring for fairness and drift ensures that models remain valid as conditions evolve (changing grid architectures to new customer technologies like electric vehicles and distributed storage, for example). By proactively addressing ethical and regulatory considerations, utilities can confidently scale analytics into core operations.
+
+
+\subsection{Building Fairness and Explainability into Models}\label{building-fairness-and-explainability-into-models}
+
+We perform fairness audits and explainability analysis on predictive maintenance models. I'm showing you how to detect bias across different subgroups. Urban vs.~rural assets are examples. I'm showing you how to understand what drives individual predictions. This isn't optional in a regulated industry.
+
+We generate asset data with a sensitive attribute (region) to test for bias.
+
+\lstinputlisting[firstline=20,lastline=42]{../code/c18_ethics.py}
+
+This creates transformer data with region labels (urban vs.~rural) and includes sensor readings and failure outcomes. In practice, this would come from SCADA and asset management systems.
+
+We train a predictive model to demonstrate how bias can emerge.
+
+\lstinputlisting[firstline=43,lastline=61]{../code/c18_ethics.py}
+
+This shows how the Random Forest classifier predicts failures from sensor data. The model doesn't explicitly use region as a feature, but region may correlate with other factors. Rural assets might have different operating conditions, for example. This is the tricky part. Bias can creep in even when you don't explicitly use sensitive attributes.
+
+We perform a fairness audit to detect bias across subgroups.
+
+\lstinputlisting[firstline=62,lastline=78]{../code/c18_ethics.py}
+
+This shows how Fairlearn calculates fairness metrics separately for urban and rural assets (selection rate, false negative rate, and false positive rate, for example), revealing whether the model treats both groups equitably. Higher false negatives in one group means that group gets less protection—this is a serious fairness issue. Models that perform well overall can fail fairness audits because they treat different groups differently.
+
+The complete, runnable script is at \texttt{content/c15/ethics.py}. Run it and see if your models pass fairness audits.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Ethics and governance are not optional. In regulated industries, AI must be fair, explainable, and auditable. Building these into workflows from the start is easier than retrofitting. Fairness audits reveal hidden bias. Models can discriminate even when sensitive attributes aren't explicit features. Regular audits detect and mitigate bias before it causes harm.
+
+Explainability builds trust. Engineers, operators, and regulators need to understand model decisions. SHAP and similar methods provide interpretable explanations. Regulatory compliance requires documentation. Complete model documentation including data, code, and performance supports audits. This demonstrates due diligence.
+
+Governance enables scaling. Systematic processes for model development, deployment, and monitoring allow utilities to scale AI responsibly. Utilities get in trouble with regulators when they can't explain how their models worked. Don't let that be you.
+
+Here's the bottom line: ethics isn't a nice-to-have. In a regulated industry, it's a requirement. Build it in from the start, or you'll pay for it later.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 19, we'll explore cost optimization and ROI measurement. We'll learn how to justify ML investments, calculate financial returns, and build business cases that demonstrate value to stakeholders. This is where the rubber meets the road.

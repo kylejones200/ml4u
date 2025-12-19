@@ -1,0 +1,122 @@
+\chapter{Large Language Models}\label{ch:llms}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand how LLMs can extract insights from unstructured utility text. Logs, reports, and compliance documents are examples. You'll learn to use LLMs for summarization and entity extraction from maintenance logs. You'll see how multimodal AI combines text, images, and sensor data for comprehensive analysis. You'll recognize the costs, limitations, and deployment considerations for LLM applications. You'll appreciate the experimental nature of LLMs in utility operations and when to use them.
+
+
+\subsection{The Business Problem: Making Sense of Complex, Unstructured Data}\label{the-business-problem-making-sense-of-complex-unstructured-data}
+
+A transformer failed. The SCADA data showed the overload. The maintenance log from six months earlier mentioned an oil leak. Nobody connected them. That's the problem. Structured and unstructured data don't talk to each other.
+
+Utilities operate in environments that generate a constant mix of structured and unstructured data. Structured data is well understood and widely used in analytics (SCADA readings, AMI meter data, and asset inventories), but an equally important layer of information lives in unstructured formats (maintenance logs, inspection notes, incident reports, regulatory filings, and even field images or drone footage).
+
+Historically, these two worlds have remained separate: engineers interpret logs and inspection notes manually, while structured data feeds into automated reports and dashboards. This split leads to slow, fragmented decision-making. For example, if a transformer fails, SCADA data may show an overload condition, but the underlying issue might be buried in text (a minor oil leak noted in a maintenance report six months earlier). Without tools to unify these sources, valuable context is lost.
+
+A transformer failed. The SCADA data showed the overload. The maintenance log from six months earlier mentioned an oil leak. Nobody connected them. That's the problem. Structured and unstructured data don't talk to each other.
+
+This challenge grows as the grid digitizes. Distributed energy resources, smart devices, and IoT sensors introduce new data streams. Field inspections increasingly involve photos or video from drones, and call center transcripts capture customer complaints that may indicate emerging reliability issues. Utilities need ways to synthesize these diverse data types to support faster, better-informed decisions.
+
+
+\subsection{The Analytics Solution: LLMs and Multimodal Integration}\label{the-analytics-solution-llms-and-multimodal-integration}
+
+Large language models (LLMs) excel at interpreting unstructured text—they summarize documents and extract key entities or themes. When combined with structured data, they can create a more complete picture of utility operations. For example, LLMs can read maintenance logs, extract references to specific equipment, and pair those findings with SCADA measurements to create context-rich asset profiles.
+
+Multimodal AI takes this further by handling text, images, and sensor data together. A single model can analyze drone photos for defects, summarize technician notes, and correlate findings with temperature or load history to generate prioritized maintenance recommendations. This integration enables workflows that previously required manual coordination between teams.
+
+
+\subsection{Understanding Large Language Models}\label{understanding-large-language-models}
+
+LLMs like GPT-4, Claude, and Llama are neural networks trained on vast text corpora. They can summarize by condensing long documents into key points, extract specific information (entities, dates, and equipment IDs), classify text into categories (routine versus failure or compliance versus operational), and generate reports, responses, or documentation.
+
+How LLMs work: they are trained to predict next words in sequences. They learn patterns, grammar, and domain knowledge from training data. They can be fine-tuned on utility-specific text for better performance. They use attention mechanisms to understand context.
+
+LLM options for utilities include OpenAI GPT models. These offer high performance through API-based, pay-per-use access. Open-source models like Llama and Mistral are self-hosted with lower cost and more control. Fine-tuned models are trained on utility text for domain-specific tasks.
+
+
+\subsection{Costs and Limitations of LLMs}\label{costs-and-limitations-of-llms}
+
+Cost considerations include API costs (GPT-4 can cost \$0.03-0.06 per 1K tokens for input and output combined—processing thousands of logs daily adds up quickly), infrastructure costs from self-hosting open-source models (requiring GPUs and significant compute), and development costs (prompt engineering, fine-tuning, and integration require expertise).
+
+Limitations include hallucination (LLMs can generate plausible but incorrect information), context windows (limited in input length though improving), latency (API calls add delay that may not be suitable for real-time applications), privacy concerns (sending sensitive data to external APIs), and regulatory uncertainty (LLM outputs may not meet explainability requirements).
+
+Use LLMs for text summarization and extraction (these offer high value with lower risk), compliance document review (augmenting human review), and customer service chatbots (with human oversight). Avoid LLMs for real-time control decisions (they are too slow and unreliable), critical safety decisions (due to hallucination risk), and highly regulated decisions requiring explainability.
+
+
+\subsection{Prompt Engineering for Utilities}\label{prompt-engineering-for-utilities}
+
+Effective prompts are critical for LLM performance. Be specific—ask to summarize a maintenance log and extract equipment IDs rather than just analyzing text. Provide context by including domain knowledge (in utility operations, TX-101 refers to a transformer). Use examples—few-shot learning improves performance. Specify format by requesting structured output (JSON or tables) to make integration easier.
+
+An example prompt structure might instruct the LLM to act as an expert in utility operations. It analyzes maintenance logs. It summarizes key issues. It extracts equipment IDs in a specific format. TX-XXX or SUB-XXX are examples. It flags any failure-related language.
+
+The code shows basic LLM usage. Production systems should include prompt templates, validation, and error handling.
+
+
+\subsection{Practical Applications}\label{practical-applications}
+
+Utilities can use LLMs to automate the review of compliance documents. They quickly identify sections relevant to specific standards. Field inspection notes can be summarized automatically. This highlights critical observations. It links them to asset IDs. Multimodal models can screen solar panel images for cracks. They pair results with inverter performance data. This pinpoints which defects are reducing output.
+
+In control centers, operators could query LLM-powered systems in natural language. They retrieve SCADA trends, past incidents, and maintenance history for any given feeder or substation. This reduces the friction of navigating multiple systems and databases manually.
+
+The energy sector demonstrates this pattern. It's not strictly utilities. There's a concept called ``Agents4Energy'' that shows how AI agents can democratize analytics for domain experts. Here's the problem it solves: a petroleum engineer might need to analyze 200 wells. They need to understand decline curves. They need to recommend actions before tomorrow morning's production meeting. Traditional BI dashboards show KPIs but don't answer deeper questions. ``Decline by completion type'' or ``what-if scenarios for reservoir properties'' are examples. Custom analysis requests to data science teams can take two to three weeks. Multiple back-and-forth clarifications are required. The analysts might not understand the domain terminology or physics-based constraints.
+
+AI agents act as ``digital co-workers'' that hold context. They have multi-turn conversations. They orchestrate specialized tools as needed. These aren't simple chatbots. They pick the right tool for the job. They iterate on outputs to solve nuanced domain challenges. The impact is dramatic. What used to be a multi-day process with multiple handoffs becomes minutes. One engineer's workflow went from ``days waiting for DS support, multiple handoffs, uncertain results'' to ``analysis in minutes, reliable and reproducible methodology, scalable across business units.''
+
+This pattern applies directly to utilities. Grid engineers could use agents to analyze transformer performance across hundreds of assets. They could forecast load impacts of new DER installations. They could investigate outage patterns. All through natural language queries. The agent translates the question into the right data analysis and visualization. That's the future of how domain experts will interact with data.
+
+NextEra Energy has been one of the early adopters of Gen AI in utilities. While others were experimenting, they took it seriously from the start. They built what they call a ``Gen AI factory'' with four layers. Governance and risk management, platform capabilities, patterns and accelerators, and solution development are the layers.
+
+The governance layer is critical. They have approved usage policies, risk management templates, and guardrails. These filter content and redact PII. This isn't just a checkbox exercise. They had to figure out what's an allowed usage and behavior for their models. What do you want them to interact with? Where do you want them to stay away from? What type of interactions are acceptable? They use risk management templates to evaluate use cases. Is this customer-facing or internal? How do you manage risk? The framework helps them understand where to prioritize and what level of scrutiny each use case needs.
+
+The platform layer includes responsible AI services, observability, monitoring, and access controls. As they started to productionize, things like cost, resiliency, and latency became top of mind. In the experimentation phase, you don't care much about these things. As you scale, they become critical. They built the platform to be resilient from the start. This saved them from having to retrofit later.
+
+The patterns and accelerators layer helps builders create solutions faster. They work with patterns for pipelines. How to connect to data. How to set up development and sandbox environments that stay connected to data but are managed with acceptable risk. They've built a repository and library that allows teams to store patterns and reuse them efficiently. This is important because you start to see patterns emerge. What type of chatbot you're likely to have across the enterprise. How you want to generate code. Which libraries you want to point code assistance to. Capturing these patterns early prevents everyone from reinventing the wheel.
+
+Prompt development is where they've learned a lot. Prompting is critical to the value you get out of these applications. Many utilities are in early stages of prompt management. How do you know a prompt is better than another one? A lot of it is qualitative metrics initially. They've built systems for prompt versioning, model evaluation, and prompt flows. This ensures the prompts they're using actually deliver value. This is harder than it sounds. You need to track which prompts work for which use cases. You need to be able to compare across different models.
+
+They've learned that you need consistent guardrails across all interactions. In utilities, it's very important to filter and redact PII. As you scale, you need observability and monitoring. You want to monitor cost, who's using what services, and how efficient they are. You need logging to track things and ensure your platform is performing as expected.
+
+The key insight: start with low-risk applications like summarization. Prove value, then scale. They're using Gen AI to enhance customer value, improve employee productivity, and optimize energy operations across the enterprise. The real lesson here is about building infrastructure that can scale. You can't just experiment and hope it works. You need governance, patterns, and monitoring from the start, even if you're starting small.
+
+Avangrid has taken a different approach. They focus on field operations where generative AI can provide immediate value. Their ``First Time Right Autopilot'' solution puts generative AI into the hands of wind turbine technicians through mobile devices. When a technician encounters an issue, they engage the AI-powered assistant through voice or text. The system gathers context about the problem. It provides step-by-step troubleshooting guidance. This is often supplemented with relevant documentation or instructional videos. The solution was built using Amazon Bedrock and trained on Avangrid's operations and maintenance knowledge base. Initial deployments at wind facilities in Iowa and New York have shown faster troubleshooting and reduced downtime. This demonstrates how generative AI can enhance field operations when deployed thoughtfully with proper training data and user-friendly interfaces.
+
+
+\subsection{Building LLM and Multimodal AI Systems}\label{building-llm-and-multimodal-ai-systems}
+
+We use LLMs to analyze maintenance logs and combine those insights with structured sensor data. This creates a richer picture of asset health than either data source alone. I'm showing you this because LLMs are promising. They're also risky if you don't use them carefully.
+
+We generate incident logs and sensor data to simulate real utility operations.
+
+\lstinputlisting[firstline=18,lastline=38]{../code/c12_AI4U.py}
+
+This creates synthetic maintenance and incident reports. Unstructured text is the format. It creates sensor readings. Structured data is the format. This is for transformers. These represent the types of data utilities collect from field crews and SCADA systems.
+
+We analyze logs with an LLM to extract insights from unstructured text.
+
+\lstinputlisting[firstline=39,lastline=71]{../code/c12_AI4U.py}
+
+This uses OpenAI's GPT-4 (if API key available) or a deterministic fallback to analyze incident logs. The LLM summarizes key issues. It extracts equipment references. It identifies recurring themes. The summary helps operators quickly understand patterns across multiple incidents. LLMs do a good job summarizing logs. They can also hallucinate. Always verify the output.
+
+We fuse text and sensor data to create comprehensive asset profiles.
+
+\lstinputlisting[firstline=72,lastline=79]{../code/c12_AI4U.py}
+
+This combines LLM-extracted insights from text with structured sensor data. This creates a comprehensive asset profile. For example, if logs mention ``overheating on T-102'' and sensors show high temperature for T-102, this confirms and quantifies the issue. This is where the real value is. Connecting structured and unstructured data.
+
+Important note: LLMs in utilities are still experimental. Always review LLM outputs before taking action. Start with low-risk applications like summarization before critical decisions. Teams get excited about LLMs. They realize they're too slow or unreliable for real-time operations. Start simple.
+
+The complete, runnable script is at \texttt{content/c17/AI4U.py}. Note: This requires an OpenAI API key, which is optional, for LLM functionality.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+LLMs unlock value in unstructured text. Maintenance logs, inspection reports, and compliance documents contain insights. These are difficult to extract with traditional NLP. Costs and limitations are real. LLM APIs are expensive at scale. Models can hallucinate. Use LLMs for augmentation, not replacement of human judgment.
+
+Prompt engineering matters. Well-crafted prompts dramatically improve LLM performance. Invest in prompt templates and validation. Multimodal AI is emerging. Combining text, images, and sensors creates comprehensive insights. The technology is still experimental for utilities.
+
+Start with low-risk applications. Use LLMs for summarization and extraction before deploying for critical decisions. Build trust gradually. Teams get excited about LLMs. They realize they're too slow or unreliable for real-time operations. Start simple, prove value, then scale.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 13, we'll explore enterprise integration. We'll connect ML models with GIS, SCADA, and EAM systems to create unified operational intelligence. This is where the rubber meets the road. Making models actually work in production systems.

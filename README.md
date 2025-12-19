@@ -1,123 +1,97 @@
 # Machine Learning for Power & Utilities
 
-**A Practical Guide to Applying AI and ML in the Electric Utility Industry**
+A LaTeX book on applying AI and machine learning in the electric utility industry.
 
----
+## Repository Structure
 
-## The Challenge
+```
+ml4u/
+├── latex/          # LaTeX source files (main.tex + chapter files)
+├── code/           # Python code examples referenced in chapters
+├── images/         # Figures and diagrams
+├── _internal/      # Bibliography files and internal documentation
+└── scripts/        # Utility scripts for conversion and maintenance
+```
 
-Electric utilities face unprecedented pressures: aging infrastructure, rising demand, and the urgent need to decarbonize. Traditional operational methods—reactive maintenance, static forecasts, manual inspections—are no longer sufficient. The grid is becoming more complex, more distributed, and more variable. Utilities need intelligent systems that can predict, adapt, and optimize in real time.
+## Building the Book
 
-## The Solution
+### Prerequisites
 
-This book bridges the gap between machine learning theory and utility operations. It provides practical, production-ready approaches to applying ML across the entire utility lifecycle—from load forecasting and predictive maintenance to outage prediction, renewable integration, and customer analytics.
+- LaTeX distribution (TeX Live, MacTeX, or MiKTeX)
+- `biber` for bibliography processing
+- Python 3.8+ (for utility scripts)
 
-Unlike generic ML books, this guide is grounded in real utility scenarios. Every technique is explained in the context of actual operational challenges: balancing supply and demand, preventing equipment failures, managing storm response, integrating distributed energy resources, and ensuring grid reliability.
+### Build Instructions
 
----
+1. Navigate to the `latex/` directory:
+   ```bash
+   cd latex
+   ```
 
-## Who This Book Is For
+2. Build the PDF:
+   ```bash
+   make pdf
+   ```
 
-**Utility Leaders and Practitioners** exploring how ML can deliver measurable operational value and competitive advantage.
+   Or manually:
+   ```bash
+   pdflatex main.tex
+   biber main
+   pdflatex main.tex
+   pdflatex main.tex
+   ```
 
-**Data Scientists and ML Engineers** seeking domain-specific examples and production-ready patterns for critical infrastructure.
+3. The PDF will be generated in `book_output/main.pdf`
 
-**Utility Engineers and Operators** who want to understand how ML augments their expertise and supports data-driven decision-making.
+### Makefile Targets
 
-**Students and Researchers** learning applied ML with real-world scenarios from one of the most critical industries.
+- `make pdf` - Build the complete PDF with bibliography
+- `make clean` - Remove auxiliary files (.aux, .log, .bbl, etc.)
+- `make bib` - Process bibliography only
+- `make help` - Show available targets
 
----
+## Chapter Structure
 
-## What You'll Learn
+The book is organized into parts:
 
-### Core ML Methods for Utilities
-- **Regression and Time Series:** Load forecasting with ARIMA and LSTM models
-- **Classification:** Predictive maintenance and failure prediction
-- **Clustering:** Customer segmentation for demand response programs
-- **Anomaly Detection:** Identifying equipment issues before they cause outages
+- **Part I: Foundations** (Chapters 1-3)
+- **Part II: Core Applications** (Chapters 4-9)
+- **Part III: Advanced Techniques** (Chapters 10-13, 27-28)
+- **Part IV: Integration and Scale** (Chapters 14-26)
 
-### Advanced Applications
-- **Computer Vision:** Automated infrastructure inspections using drone imagery
-- **Natural Language Processing:** Extracting insights from maintenance logs and compliance documents
-- **Reinforcement Learning:** Grid operations optimization (with appropriate safety considerations)
-- **Large Language Models:** Multimodal AI for comprehensive operational intelligence
+## Code Examples
 
-### Production Deployment
-- **MLOps:** Moving models from notebooks to production with MLflow
-- **Orchestration:** Coordinating multiple ML workflows with Prefect
-- **Integration:** Connecting ML models with SCADA, GIS, and EAM systems
-- **Governance:** Ensuring models are fair, explainable, and compliant
+All Python code examples are in the `code/` directory, prefixed with chapter numbers (e.g., `c1_intro_to_ML.py`). Code is referenced in LaTeX using `\lstinputlisting` with line ranges.
 
----
+## Images
 
-## The Journey
+All figures and diagrams are in the `images/` directory, prefixed with chapter numbers (e.g., `c1_chapter1_load_plot.png`).
 
-The book progresses from fundamentals to advanced topics, building on concepts as you go:
+## Bibliography
 
-**Part 1: Foundations (Chapters 1-3)**
-Start with the business context, data preparation challenges, and core ML methods mapped to utility use cases.
+Bibliography files are in `_internal/`:
+- `bibtex_library.bib` - Academic and technical references
+- `case_studies.bib` - Industry case studies
 
-**Part 2: Core Applications (Chapters 4-9)**
-Apply ML to essential utility functions: load forecasting, predictive maintenance, outage prediction, grid optimization, renewable integration, and customer analytics.
+## Maintenance
 
-**Part 3: Advanced Techniques (Chapters 10-13)**
-Explore computer vision, NLP, MLOps, and cybersecurity analytics for utilities.
+### Converting Markdown to LaTeX
 
-**Part 4: Integration and Scale (Chapters 14-20)**
-Build integrated pipelines, ensure ethical AI, orchestrate workflows, leverage cutting-edge AI, plan strategically, integrate with enterprise systems, and deploy full platforms.
+If you need to regenerate LaTeX from markdown sources (if they exist):
 
----
+```bash
+python3 scripts/convert_md_to_latex.py
+python3 scripts/clean_latex_files.py
+```
 
-## Why This Book Matters
+### Cleaning LaTeX Files
 
-**Few books address ML specifically for utilities.** Most ML resources are generic, leaving practitioners to figure out how to apply techniques to grid operations, asset management, and regulatory compliance.
+Remove pandoc preamble and horizontal rules:
 
-**This book provides:**
-- **Real utility scenarios** with business context and operational impact
-- **Production-ready code** that demonstrates complete workflows
-- **Regulatory awareness** addressing compliance, ethics, and governance
-- **Practical guidance** on when to use which techniques and how to avoid common pitfalls
+```bash
+python3 scripts/clean_latex_files.py
+```
 
-**The result:** You'll learn not just how to build ML models, but how to deploy them in a regulated industry where reliability, safety, and transparency are non-negotiable.
+## License
 
----
-
-## Key Features
-
-✅ **Business-First Approach:** Every chapter opens with the business problem, not just the technical solution
-
-✅ **Production-Ready Code:** Complete, runnable Python examples with proper error handling and documentation
-
-✅ **Regulatory Awareness:** Coverage of NERC, state PUC requirements, and ethical AI considerations
-
-✅ **Modern Tooling:** Uses current libraries (scikit-learn, MLflow, Prefect, YOLO) that practitioners actually use
-
-✅ **Progressive Learning:** Builds from simple regression to advanced orchestration and platform deployment
-
-✅ **Real-World Context:** Examples grounded in actual utility operations, not toy datasets
-
----
-
-## Getting Started
-
-**New to ML?** Start with Chapter 1 (Introduction) and Chapter 3 (ML Fundamentals) to build your foundation.
-
-**Utility Engineer?** Focus on Chapters 1-2, 4-6, and 14-15 to understand ML applications for operations and reliability.
-
-**Data Scientist?** Jump into Chapters 4-12 for advanced techniques and production deployment patterns.
-
-**ML Engineer?** Prioritize Chapters 12-14, 16, and 20 for MLOps, orchestration, and platform architecture.
-
----
-
-## The Future of Utilities
-
-The electric grid is transforming. Distributed energy resources, electrification, and climate pressures demand smarter operations. Machine learning isn't optional—it's essential for utilities that want to remain reliable, efficient, and competitive.
-
-This book provides the practical foundation to make that transformation happen. You'll learn to build models that operators trust, deploy systems that scale, and create value that stakeholders can measure.
-
-**Start your journey toward data-driven utility operations today.**
-
----
-
-*Live site: https://kylejones200.github.io/ml4u/*
+Copyright © 2025 Kyle Jones. All rights reserved.

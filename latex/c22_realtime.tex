@@ -1,0 +1,141 @@
+\chapter{Real-Time Analytics}\label{ch:realtime}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand how to build real-time analytics systems that integrate with control room operations. You'll learn to process streaming SCADA and PMU data with sub-second latency. You'll see how to deploy ML models for real-time inference in operational environments. You'll recognize the challenges of integrating analytics with legacy OT systems. You'll appreciate the importance of the Purdue Model architecture for secure, compliant deployments.
+
+
+\subsection{The Business Problem: Operating the Grid in Real Time}\label{the-business-problem-operating-the-grid-in-real-time}
+
+A transformer failure cascaded into a feeder trip, leaving fifteen thousand customers without power. The operator's dashboard showed dozens of alarms, but no system had predicted this failure. The data was there, but it wasn't being analyzed in real time to surface the risk.
+
+Control rooms are where grid reliability happens. Operators monitor dozens of dashboards, watching voltages, currents, frequencies, and power flows across hundreds of substations and feeders. When something goes wrong, operators have seconds to minutes to respond before problems cascade into larger outages (a transformer overheats, a feeder trips, voltage sags, for example).
+
+The challenge is that traditional control room systems show what's happening now, but they don't predict what's about to happen. SCADA systems display current telemetry, but they don't analyze patterns across time or correlate events across different systems. Operators rely on experience and alarms, but by the time an alarm fires, the problem may already be escalating.
+
+I've seen this firsthand. In a control room in 2019, a transformer failure cascaded into a feeder trip, leaving fifteen thousand customers without power. The operator's dashboard showed dozens of alarms, but no system had predicted this failure. The data was there (temperature trends, loading patterns, historical failures), but it wasn't being analyzed in real time to surface the risk.
+
+The grid is getting more complex. Distributed energy resources inject variable generation into distribution circuits, electric vehicles create sudden localized load spikes, and weather volatility drives rapid swings in both supply and demand. Operators must adjust reactive power, tap changers, capacitor banks, and feeder configurations more frequently with less predictability than before. Manual interventions that once sufficed are no longer enough—they can't keep pace with these dynamics.
+
+Real-time analytics can help. By processing streaming data from SCADA, PMU, AMI, and weather systems, ML models can detect anomalies, predict failures, and suggest interventions before problems escalate. But building these systems requires understanding the unique constraints of operational technology environments.
+
+
+\subsection{The Analytics Solution: Streaming Analytics for Grid Operations}\label{the-analytics-solution-streaming-analytics-for-grid-operations}
+
+Real-time analytics for utilities means processing data streams with low latency (seconds to minutes, not hours or days), integrating with operational systems that can't tolerate downtime, and meeting regulatory requirements like NERC CIP while enabling modern analytics capabilities.
+
+The architecture starts with data ingestion. SCADA systems generate telemetry every few seconds, PMU data streams at 60 samples per second, AMI meters report hourly or sub-hourly consumption, and weather feeds update every 15 minutes. These streams need to be ingested, normalized, and made available for real-time analysis.
+
+Streaming frameworks like Apache Spark Structured Streaming or Kafka enable continuous processing. Data flows through pipelines that clean, transform, and enrich telemetry with context (weather conditions, asset metadata, and historical patterns, for example). ML models run inference on these streams, generating predictions and alerts in real time.
+
+The results feed back into operational systems. Control room dashboards display predictions alongside current telemetry, and automated systems can trigger alerts or even adjust controls within safety limits. The key is low latency—predictions need to arrive fast enough to be actionable.
+
+
+\subsection{Understanding the Purdue Model for OT Integration}\label{understanding-the-purdue-model-for-ot-integration}
+
+The Purdue Model is the standard architecture framework for industrial control systems. It segments networks into levels, from field devices (Level 0) to enterprise systems (Level 4). Understanding this model is essential for integrating analytics with operational technology.
+
+\textbf{Level 0 -- Devices:} Field sensors and actuators measure and control physical processes. Data enters through protocols like MODBUS, OPC-UA, or MQTT.
+
+\textbf{Level 1 -- Control:} PLCs and edge gateways process sensor data and execute control logic. This is where real-time control happens, with millisecond response times.
+
+\textbf{Level 2 -- Supervisory:} SCADA, HMI, and historian systems monitor and control Level 1 devices. This is where operators interact with the system, viewing dashboards and issuing commands.
+
+\textbf{Level 3 -- Operations:} MES, DCS, and maintenance systems manage production and asset maintenance. This layer bridges operational technology with information technology.
+
+\textbf{Level 4 -- Enterprise:} ERP, CMMS, and planning systems handle business functions. This is where analytics platforms typically operate, consuming data from lower levels without interfering with control operations.
+
+For analytics integration, the key principle is read-only access to Levels 0-2. Analytics systems should consume telemetry without modifying control logic or interfering with real-time operations. Data flows up from field devices through SCADA to analytics platforms, while control commands flow down from operators through SCADA to field devices. Analytics never directly controls equipment—it informs operator decisions.
+
+This architecture ensures security and compliance. OT networks remain isolated from IT networks, with controlled access points. Analytics platforms operate in Level 3 or 4, consuming data through secure gateways without exposing control systems to external threats.
+
+
+\subsection{Streaming Data Ingestion and Processing}\label{streaming-data-ingestion-and-processing}
+
+Real-time analytics requires continuous data ingestion. SCADA systems typically export data through historians like OSIsoft PI or AVEVA Historian. These systems aggregate telemetry from field devices, storing it in time-series databases. Analytics platforms can query historians for historical data or subscribe to real-time streams.
+
+The challenge is protocol diversity. Different vendors use different protocols (MODBUS, DNP3, OPC-UA, IEC 61850, for example), and each protocol has its own data model and communication patterns. Protocol translation gateways normalize these differences by converting vendor-specific formats into standard schemas.
+
+Once ingested, data needs to be processed in real time. Streaming frameworks enable continuous transformations: resampling time series to common intervals, joining telemetry with asset metadata, and enriching with weather or market data. The goal is to create unified data streams that ML models can consume.
+
+The code demonstrates this with a streaming pipeline. It ingests SCADA voltage and current measurements, joins them with transformer metadata, and computes derived features (loading percentage and power factor, for example). These features feed real-time anomaly detection models that flag equipment operating outside normal parameters.
+
+
+\subsection{Real-Time Model Inference}\label{real-time-model-inference}
+
+Deploying ML models for real-time inference requires low latency—models need to process incoming data streams and generate predictions within seconds, not minutes. This means optimized inference pipelines, potentially using specialized hardware like GPUs or edge devices.
+
+The architecture typically involves model serving frameworks that load trained models into memory and process requests asynchronously. Input data arrives as streams, gets preprocessed, runs through the model, and outputs predictions. The entire pipeline needs to complete in milliseconds to seconds.
+
+For utilities, model serving often happens in cloud platforms or edge devices near control centers. Cloud deployment offers scalability and integration with data platforms, but requires secure connectivity to OT networks. Edge deployment reduces latency and network dependency, but requires managing compute infrastructure.
+
+The code shows a real-time inference pipeline for transformer failure prediction. SCADA telemetry streams in, gets preprocessed, and runs through a trained model. Predictions are generated with timestamps and confidence scores, then published to dashboards or alerting systems.
+
+
+\subsection{Integration with Control Room Systems}\label{integration-with-control-room-systems}
+
+Integrating analytics with control room systems requires careful design. Operators need predictions displayed alongside current telemetry in formats they understand, alerts need to be actionable (not just informative), and systems need to be reliable because control rooms can't tolerate downtime.
+
+Common integration patterns include dashboard widgets that display ML predictions, alert systems that notify operators of high-risk conditions, and automated systems that adjust controls within safety limits. The key is making analytics outputs useful without overwhelming operators with information.
+
+One utility I worked with deployed a real-time voltage optimization system that analyzed SCADA data from distribution feeders, predicted voltage excursions, and suggested capacitor bank adjustments. Operators reviewed suggestions and approved actions, maintaining human oversight while benefiting from ML insights.
+
+The system reduced voltage violations by 40\% and improved power quality metrics, but the real win was operator trust. The system provided clear explanations for its recommendations, and operators could override suggestions when they disagreed. This human-in-the-loop approach is essential for critical infrastructure.
+
+
+\subsection{Edge Computing for Disconnected Operations}\label{edge-computing-for-disconnected-operations}
+
+Many utility sites operate in remote locations with unreliable network connectivity. Substations, generation plants, and field devices may have intermittent internet access or operate in air-gapped networks. Edge computing enables analytics to run locally, processing data and generating insights without constant cloud connectivity.
+
+Edge devices can run lightweight ML models, performing anomaly detection or failure prediction on local data. Results can be cached and synchronized with cloud platforms when connectivity is available. This hybrid approach ensures analytics continue operating even when networks are down.
+
+The challenge is model size and compute constraints. Edge devices have limited memory and processing power compared to cloud platforms. Models need to be optimized for edge deployment, potentially using techniques like quantization or model distillation to reduce size while maintaining accuracy.
+
+For utilities, edge computing is particularly valuable for remote monitoring. Substations in rural areas can run local analytics, detecting equipment issues and alerting operators even when network connectivity is intermittent. This reduces response times and improves reliability for isolated assets.
+
+
+\subsection{Protocol Translation and Data Normalization}\label{protocol-translation-and-data-normalization}
+
+OT environments use diverse protocols and data formats. SCADA systems may use DNP3, while historians use proprietary formats, and field devices communicate via MODBUS or OPC-UA. Each protocol has its own data model, requiring translation to standard schemas.
+
+Protocol translation gateways normalize these differences. They convert vendor-specific formats into standard time-series schemas with consistent timestamps, units, and quality flags. This enables analytics platforms to consume data from multiple sources without custom integration for each protocol.
+
+The code demonstrates protocol translation for SCADA data. Different vendors report voltage in different formats. Some as percentages, others as absolute values. The translation layer normalizes these to standard units (kV), ensuring consistent analysis across equipment from different manufacturers.
+
+Data normalization also handles quality issues. Missing values, out-of-range readings, and communication errors need to be flagged and handled appropriately. Real-time systems can't wait for manual data cleaning. They need automated quality checks that flag bad data without stopping the pipeline.
+
+
+\subsection{Security and Compliance for Real-Time Analytics}\label{security-and-compliance-for-real-time-analytics}
+
+Real-time analytics systems must meet regulatory requirements like NERC CIP while enabling modern capabilities, requiring secure architecture that protects critical infrastructure while allowing necessary data flows.
+
+Key security principles include network segmentation following the Purdue Model, encryption of data in transit and at rest, access controls that limit who can view or modify analytics, and audit logging that records all data access and model predictions.
+
+For NERC CIP compliance, analytics platforms need to demonstrate that they don't interfere with control operations. They need to show that access is properly controlled and logged. They need to show that security incidents can be detected and responded to. This often requires air-gapped deployments or secure gateways that isolate analytics from control networks.
+
+The architecture typically involves read-only data replication from OT networks to analytics platforms. Control systems remain isolated, with data flowing one-way from operations to analytics. This ensures that analytics can't accidentally interfere with grid operations while still providing valuable insights.
+
+
+\subsection{Case Study: Alabama Power's Real-Time Storm and Reliability Analytics}\label{case-study-alabama-powers-real-time-storm-and-reliability-analytics}
+
+Alabama Power built two applications on Databricks that demonstrate real-time analytics at scale: SPEAR (Storm Planning, ETR and Reporting) and RAMP (Reliability Analytics Metrics and Performance). These systems process data from 1.5 million customers, 2,400 substations, and 250,000 devices, providing near real-time insights for control room operations.
+
+The architecture ingests data from multiple sources: Outage Management System provides real-time grid status, weather data vendors provide storm predictions, AMI provides smart meter data from customer premises, and grid telemetry comes from sensors across the distribution network. All of this flows into Azure Blob Storage initially, then gets processed through Delta Lake tables using Delta Live Tables, which handles incremental processing, data quality checks, and dependency management.
+
+SPEAR predicts storm impacts on the grid, including outages and estimated time of restoration. It uses weather data and internal systems to forecast the number of incidents and resources needed. The system can predict storm impact within a 10\% margin of error. For a 10-day storm with 500 customer outages, reducing the margin of error from 20\% to 10\% saves about \$2.8M per storm event by avoiding over or under-provisioning of resources.
+
+RAMP provides real-time monitoring of assets, shifting from monthly to near real-time reporting. Customer outage history retrieval improved from four hours to four seconds—that's a 99.97\% efficiency gain. With 70,000 annual outages, a targeted 5\% reduction (3,500 outages) could save \$17.5M in crew costs alone. The application helps identify areas of improvement and provides insights into root causes of reliability issues.
+
+The technical implementation uses GraphFrames to analyze grid topology, GeoSpark for geospatial processing of assets, and custom time series models for demand and outage prediction. The outputs are visualized in containerized applications built by E Source, ensuring high availability and scalability. Unity Catalog centralizes metadata management across multiple workspaces, providing consistent access controls and security policies.
+
+What makes this work is the unified platform approach. Instead of separate systems for different data sources, everything flows through Databricks, enabling seamless collaboration between data scientists, engineers, and operators. The platform handles the high-volume, high-velocity data streams from millions of smart meters while maintaining low latency for real-time decision-making.
+
+The challenge they solved is familiar: how do you process massive amounts of operational data quickly enough to be useful in control rooms? The answer is streaming architecture with Delta Lake for reliable storage, Delta Live Tables for automated ETL, and MLflow for model management. But the real win is that operators can now access 10 years of outage history in seconds, not hours—this changes how they respond to customer inquiries and plan maintenance.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Real-time analytics for utilities requires understanding operational technology constraints. The Purdue Model provides the architectural framework for secure, compliant integration. Streaming data ingestion and processing enable low-latency insights, model inference needs to be fast enough to be actionable, and integration with control room systems requires careful design to make outputs useful without overwhelming operators. Edge computing enables analytics in disconnected environments, protocol translation normalizes diverse OT data formats, and security and compliance are non-negotiable for critical infrastructure.
+
+The goal isn't to replace operators. It's to give them better information faster. Real-time analytics augments human judgment, providing predictions and alerts that help operators make better decisions. When done right, these systems become essential tools that operators rely on daily.
+

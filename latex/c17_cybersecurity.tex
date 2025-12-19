@@ -1,0 +1,117 @@
+\chapter{Cybersecurity}\label{ch:cybersecurity}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand the unique cybersecurity challenges utilities face in OT environments. OT stands for operational technology. You'll learn to apply anomaly detection to identify unusual network patterns. These may indicate intrusions. You'll see how supervised learning can classify known attack types from network traffic data. You'll recognize the critical importance of false positive management in security operations. You'll appreciate the need for explainable models that security analysts can interpret.
+
+
+\subsection{The Business Problem: Protecting the Grid from Evolving Threats}\label{the-business-problem-protecting-the-grid-from-evolving-threats}
+
+A security team wants to patch everything, but operations can't tolerate downtime—this is the constant tension utilities face.
+
+Utilities face increasing cybersecurity threats targeting both their IT systems and operational technology. Attacks on critical infrastructure can cause service disruptions, damage equipment, and even compromise public safety. High-profile incidents worldwide have demonstrated how vulnerable control systems and field devices can be to cyber intrusions.
+
+Unlike traditional corporate IT environments, utilities operate industrial control systems with unique constraints. SCADA networks and field devices often run on legacy protocols with limited security features, making them attractive targets. Additionally, operational environments cannot tolerate frequent downtime, which complicates the deployment of traditional IT security tools.
+
+Utilities struggle with this. The security team wants to patch everything, but operations can't tolerate downtime. It's a constant tension.
+
+The consequences of a successful attack are severe. Malicious actors could manipulate breaker controls, disable protective relays, or disrupt market operations. The interconnected nature of modern grids amplifies the risk—an attack on one utility can cascade to others. Regulators have responded with standards such as NERC CIP, but compliance alone is insufficient in an era of fast-moving and sophisticated threats.
+
+
+\subsection{The Analytics Solution: Data-Driven Intrusion Detection}\label{the-analytics-solution-data-driven-intrusion-detection}
+
+Cybersecurity analytics uses machine learning to identify unusual network traffic, unauthorized access attempts, and other anomalies that may indicate an intrusion. Traditional signature-based detection systems struggle against novel attacks or insider threats that don't match known patterns.
+
+Anomaly detection models are well suited to critical infrastructure environments. These models learn what normal operational behavior looks like, then flag deviations in real time. For example, they might detect unusual traffic patterns on SCADA networks or abnormal sequences of commands sent to field devices.
+
+Supervised learning can also be applied where labeled attack data is available. Datasets such as CICIDS2017 provide examples of intrusion behaviors. These can be used to train classification models. They distinguish legitimate activity from malicious actions. Combined with real-time monitoring, these models strengthen defenses against evolving threats.
+
+
+\subsection{Accessing the CICIDS2017 Dataset}\label{accessing-the-cicids2017-dataset}
+
+The CICIDS2017 dataset is a widely used benchmark for intrusion detection research. It contains labeled network traffic data with various attack types (DDoS, port scan, and brute force, for example) and includes benign traffic.
+
+To access the dataset, visit the University of New Brunswick's website or research data repositories. Download the full dataset, which is large at approximately 50GB. Or use pre-processed samples. The code includes a sample CSV for demonstration.
+
+For production use, use your own network traffic data in anonymized form. Label known attacks from security incident logs. Work with security teams to create training datasets. Consider synthetic data generation for rare attack types.
+
+Xcel Energy identified cybersecurity as one of their four biggest risks (nuclear, gas pipeline, and wildfire risks are the others). As part of their enterprise data strategy, they're working on projects that ingest log and user data, enabling cyber insider threat detection and anomaly detection capabilities. The goal is to get ahead of any type of threats to their systems, which requires analyzing vast amounts of log data from IT and OT systems to identify unusual patterns that might indicate malicious activity.
+
+Their approach leverages their unified data platform, allowing them to ingest, process, and analyze security logs alongside operational data. This integrated approach enables them to correlate security events with operational impacts, providing a more complete picture of potential threats. The system uses anomaly detection models to identify unusual network traffic patterns, unauthorized access attempts, and other behaviors that may indicate an intrusion. By learning what normal operational behavior looks like, the models can flag deviations in real time.
+
+This shows how utilities can extend their data analytics capabilities to include cybersecurity, using the same platforms and tools they use for operational analytics. The unified approach enables better threat detection while maintaining the operational reliability required for critical infrastructure.
+
+Duke Energy is using AI and satellite technology for a different kind of monitoring. Methane emissions from their natural gas distribution assets are the focus. They set an ambitious net-zero methane goal for 2030. This required going beyond current EPA regulations. They built an end-to-end Azure-based cloud platform. This uses satellite monitoring, analytics, and AI to quantify and prioritize methane leaks. The platform provides near real-time leak detection with pinpoint geolocation. Workers can find leaks in minutes instead of days. The solution has the potential to identify system vulnerabilities and prevent future leaks. It doesn't just detect current ones. Once scaled across all asset types and jurisdictions, it will help them achieve their net-zero methane goals. The key insight: sometimes the best way to monitor infrastructure is from above, not from the ground.
+
+The code handles missing datasets gracefully, generating synthetic data if needed for demonstration.
+
+
+\subsection{False Positive Management: Critical for Security Operations}\label{false-positive-management-critical-for-security-operations}
+
+False positives are a major challenge in cybersecurity analytics. Security operations centers can be overwhelmed by alerts, most of which are false alarms, leading to alert fatigue where analysts ignore alerts and miss real threats. Resource waste comes from time spent investigating non-threats, and loss of trust happens as operators lose confidence in detection systems.
+
+Strategies to reduce false positives include confidence thresholds (you only alert on high-confidence detections), whitelisting (excluding known-good traffic patterns), context enrichment (combining multiple signals before alerting), feedback loops (tracking false positive rates and retraining models), and tiered alerting (routing low-confidence alerts to automated review, high-confidence alerts to analysts).
+
+For utilities, false positives are especially costly because security teams are often small and operational impact is high. Models must be tuned to balance detection, meaning catching attacks, with precision, meaning avoiding false alarms.
+
+
+\subsection{Adversarial Machine Learning Considerations}\label{adversarial-machine-learning-considerations}
+
+ML models used for cybersecurity can themselves be attacked. Evasion attacks occur when adversaries craft inputs that fool models (traffic that looks benign but is malicious, for example). Poisoning attacks happen when training data is corrupted, making models miss specific attacks. Model extraction occurs when attackers probe models to understand their logic.
+
+Defense strategies include adversarial training (including adversarial examples in training data), ensemble methods (combining multiple models to reduce vulnerability), input validation (sanitizing and validating inputs before model processing), and model monitoring (detecting unusual model behavior that may indicate attacks).
+
+
+\subsection{Explainability for Security Analysts}\label{explainability-for-security-analysts}
+
+Security analysts need to understand why models flag certain traffic as suspicious. Black-box models like deep neural networks are difficult to interpret, making it hard to investigate alerts (analysts can't determine what triggered the alert), tune thresholds (it's unclear which features drive detections), and build trust (analysts may ignore alerts they don't understand).
+
+Explainability techniques include feature importance (showing which network features drive detections—packet size and frequency, for example), SHAP values (explaining individual predictions and why specific traffic was flagged), rule extraction (converting models to interpretable rules), and visualization (plotting feature values for flagged traffic versus normal traffic).
+
+The code focuses on detection, but production systems should include explainability to support analyst workflows.
+
+
+\subsection{Operational Benefits}\label{operational-benefits}
+
+Integrating analytics into cybersecurity provides several benefits. It enables faster detection of threats that evade conventional tools, reducing dwell time and limiting potential damage. By focusing alerts on high-risk anomalies, it reduces false positives and eases the burden on security operations centers.
+
+These capabilities are especially valuable for utilities adopting more digital and distributed technologies. As advanced metering, DER integration, and remote monitoring expand the attack surface, analytics offers scalable ways to manage risk without overwhelming human analysts.
+
+
+\subsection{Building Cybersecurity Detection Models}\label{building-cybersecurity-detection-models}
+
+We walk through two complementary approaches to cybersecurity analytics. Anomaly detection (unsupervised) finds unusual patterns without attack labels. Supervised classification detects known attack types. Both methods are essential in production security systems.
+
+We load and preprocess network traffic data to prepare for analysis.
+
+\lstinputlisting[firstline=21,lastline=66]{../code/c17_cybersecurity.py}
+
+This reads the CICIDS2017 dataset (or synthetic fallback) containing network flow features and attack labels. The preprocessing handles missing values, scales features, and encodes labels. If the dataset has only one class, the code synthesizes a second class for demonstration. In practice, you'd use your own network traffic data. The principles are the same.
+
+We apply anomaly detection to identify unusual network patterns.
+
+\lstinputlisting[firstline=67,lastline=78]{../code/c17_cybersecurity.py}
+
+This shows how Isolation Forest is an unsupervised method. It learns normal behavior and flags outliers. It's useful when attack labels aren't available or for detecting novel attacks. High accuracy means the model effectively identifies unusual patterns. Not all anomalies are attacks. This can catch insider threats that signature-based systems miss.
+
+We train a supervised detection model to classify known attack types.
+
+\lstinputlisting[firstline=79,lastline=97]{../code/c17_cybersecurity.py}
+
+This shows how the Random Forest classifier learns to distinguish known attack types from benign traffic. This approach is more accurate for known attacks but requires labeled training data. The classification report shows precision, recall, and ROC AUC. Values above 0.9 indicate excellent detection. But remember: false positives are the enemy here. A model that flags everything isn't useful.
+
+The complete, runnable script is at \texttt{content/c13/cybersecurity.py}. Run it, but remember: security models need careful tuning to balance detection with false positive rates.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Cybersecurity analytics complements signature-based detection. ML models catch novel attacks and insider threats. Traditional tools miss these. Two approaches serve different purposes. Anomaly detection finds unusual patterns without labels. Supervised learning detects known attacks more accurately.
+
+False positive management is critical. Security teams can't handle thousands of false alarms. Models must be tuned for precision. Workflows must filter low-confidence alerts. Security teams ignore alerts when there are too many false positives. That defeats the purpose. Explainability supports analysts. Security analysts need to understand why models flag traffic. Use feature importance, SHAP values, and visualization to explain detections.
+
+Adversarial ML is a real concern. Models themselves can be attacked. Use adversarial training, input validation, and monitoring to defend against model attacks. This is advanced, but it's worth thinking about.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 18, we'll explore AI ethics and governance. We'll ensure that ML models are fair, explainable, and compliant with regulatory requirements. This is essential for building trust and meeting utility industry standards.

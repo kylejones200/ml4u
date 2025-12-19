@@ -1,0 +1,187 @@
+Write concise pythonic code. No long if/else blocks. Use clear abstractions and dispatch patterns.
+
+
+Avoid if/else chains. Use dictionaries, first-class functions, polymorphism, pattern matching, or small helper functions instead of conditional branches. Keep code pythonic and concise.
+
+No if/else chains. Replace conditional logic with dispatch tables, object methods, or pattern matching.
+
+No nested conditionals. Refactor each decision into a separate function or strategy.
+
+
+Replaced if/else with idiomatic patterns — use ternary operators, early returns, and conditional expressions
+PEP 8 compliance — fixed line length, spacing, and naming
+Production-ready — removed unnecessary comments and self describing code
+
+For all Matplotlib code:
+Use a minimalist Tufte-style design.
+No gridlines.
+Use a serif font.
+Remove top and right spines.
+Use black and white markers.
+Show mean, 20%, and 80% y-axis reference lines.
+Always include plt.savefig('<descriptive-name>.png') before plt.show().
+No Seaborn styling.
+
+
+
+# ================================================
+# GLOBAL WRITING STYLE RULES
+# ================================================
+
+[writing-style]
+
+# Core voice
+enforce_active_voice = true
+enforce_direct_svo_sentences = true
+no_subordinate_clauses = true
+no_gerunds = true
+no_colons = true
+no_em_dashes = true
+no_negative_framing = true
+avoid_long_sentences = true
+sentence_length_max = 18
+
+# Structure and clarity
+one_idea_per_sentence = true
+one_topic_per_paragraph = true
+paragraph_length_max = 4_lines
+require_section_opening_context = true
+require_section_closing_summary = true
+
+# Code handling
+require_code_intro = true
+require_code_explanation = true
+code_intro_format = "We run this to achieve X."
+code_outro_format = "This shows Y."
+
+# Terminology
+define_terms_once = true
+enforce_consistent_terms = true
+
+# ================================================
+# DOCUMENT-WIDE BEHAVIOR
+# ================================================
+
+[document-rules]
+
+# When Cursor edits a chapter, apply these transformations:
+auto_split_long_sentences = true
+auto_remove_redundancy = true
+auto_add_transitions = true
+auto_structure_sections = true
+auto_eliminate_jargon_clusters = true
+
+# Do NOT remove content unless it is verbatim duplicate.
+preserve_content = true
+
+# ================================================
+# CHAPTER-SPECIFIC RULES
+# ================================================
+
+[chapters]
+
+# --- PART I: FOUNDATIONS ---
+
+chapter_1_rules = """
+Shorten all sentences. Remove subordinate clauses. Give an example at the start of every section. Add one-sentence summary at end of each section.
+"""
+
+chapter_2_rules = """
+Rewrite white-paper tone into direct statements. Use active voice. Add one clear reader-benefit line per major subsection.
+"""
+
+chapter_3_rules = """
+Split long paragraphs. Keep one idea per paragraph. Add transitions when moving from concept to code.
+"""
+
+chapter_4_rules = """
+Define data types in one sentence each. Follow each definition with a simple utility scenario. Remove stacked qualifiers.
+"""
+
+chapter_5_rules = """
+Anchor each ML concept to one utility example. Remove duplicated explanations that appear later. Add transitions between concepts.
+"""
+
+# --- PART II: CORE APPLICATIONS ---
+
+chapter_6_rules = """
+Add one-sentence setup before each code block. Add one-sentence interpretation after each plot or output. Break multi-idea sentences.
+"""
+
+chapter_7_rules = """
+Rewrite as step-by-step workflow. One short sentence per step. Each step must state its outcome.
+"""
+
+chapter_8_rules = """
+Restructure each subsection as: scenario → data → model → outcome. Compress narrative passages into direct scenario statements.
+"""
+
+chapter_9_rules = """
+Reduce jargon. Give one utility example per RL concept. Rewrite long sentences into small units.
+"""
+
+chapter_10_rules = """
+Add transition sentences between PV modeling, DER, and forecasting. Break long paragraphs. Add one practical example per subsection.
+"""
+
+chapter_11_rules = """
+Add a framing sentence for each subsection. Rewrite complex sentences. End chapter with a summary paragraph.
+"""
+
+# --- PART III: ADVANCED METHODS ---
+
+chapter_12_rules = """
+Add purpose sentence before model or code. Add interpretation after each block. Split dense paragraphs into smaller parts.
+"""
+
+chapter_13_rules = """
+Give one example from real utility logs, reports, or work orders per NLP concept. Rewrite transitions to improve flow.
+"""
+
+chapter_14_rules = """
+Anchor each LLM concept to a simple utility use case. Break long sentences. Remove research-style exposition.
+"""
+
+# --- PART IV: OPERATIONS, INTEGRATION, DEPLOYMENT ---
+
+chapter_15_rules = """
+Add transitions between integration types. Break long sentences. Provide one example for SCADA, GIS, OMS, and EAM.
+"""
+
+chapter_16_rules = """
+Remove repeated MLflow explanations. Add meaning after metric outputs. Break conditional sentences into two short sentences.
+"""
+
+chapter_17_rules = """
+Add a one-sentence overview for each subsection. Rewrite dense paragraphs. Explain the value of each orchestration feature.
+"""
+
+chapter_18_rules = """
+Replace consulting-style wording with direct instructions. Add practical examples for each platform concept. Use active voice.
+"""
+
+# --- PART V: GOVERNANCE, CYBERSECURITY, STRATEGY ---
+
+chapter_19_rules = """
+Define essential cybersecurity terms once. Provide one simple example per technique. Break multi-idea paragraphs.
+"""
+
+chapter_20_rules = """
+Tie ethical concepts to utility regulations or compliance scenarios. Remove long introductory clauses. Use direct, short sentences.
+"""
+
+chapter_21_rules = """
+Replace abstract management phrases with concrete utility cases. Shorten sentences. Add outcome statements for each section.
+"""
+
+chapter_22_rules = """
+Use the pattern: trend → impact → utility response. Remove drift in sentences. Add short summaries per subsection.
+"""
+
+chapter_23_rules = """
+Summarize the book in direct statements. Tie lessons to utility practice. Rewrite long sentences into short ones.
+"""
+
+# ================================================
+# END OF FILE
+# ================================================

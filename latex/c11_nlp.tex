@@ -1,0 +1,97 @@
+\chapter{Natural Language Processing}\label{ch:nlp}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand how NLP transforms unstructured text into actionable insights for utilities. You'll learn to classify maintenance logs as routine versus failure-related using TF-IDF and logistic regression. You'll apply named entity recognition to extract asset IDs and equipment types from text. You'll recognize the challenges of domain-specific language, or utility jargon, in NLP. You'll see how NLP integrates with operational systems for compliance and maintenance prioritization.
+
+
+\subsection{The Business Problem: Extracting Insight from Unstructured Text}\label{the-business-problem-extracting-insight-from-unstructured-text}
+
+A utility produces thousands of maintenance logs each month. Most contain routine notes, but a few contain critical failure information. Finding the important ones manually is impossible—this is the unstructured text problem.
+
+Utilities produce vast amounts of text data that rarely gets analyzed systematically. Maintenance crews write inspection notes and failure reports, control centers log operational events and equipment alarms, and regulatory compliance audits generate lengthy documentation and findings. These records often contain valuable information about recurring issues, equipment behavior, or compliance risks.
+
+The challenge is that this information is unstructured. Unlike SCADA readings or meter data, logs and reports are free-form text written in different styles by different people. Searching them manually is time-consuming, and important patterns or trends can easily be overlooked. When incidents occur, investigators must sift through thousands of records to piece together root causes. Compliance teams face similar burdens, manually compiling evidence for audits from disparate systems and document sets.
+
+I did a project where we used NLP to analyze safety observations from Stockland Island. Everyone had to report a safety issue every day. This drove a very strange culture. You had thousands of people who all had to have the safety observation every day. Most of the time it was pretty benign. ``I saw someone not holding the handrail'' or ``I saw someone with a coffee cup without a lid'' are examples. But there were things that were legitimately worth addressing. They just got covered up with all of the things that were more minor. So we used natural language processing to go through it and find what are the things that are dissimilar from everything else. Those are observations that we wanted to make sure that we're taking to the leadership to look at. Yeah, there's a there 99\% of the stuff is not that interesting. But the 1\% is what could actually help us be safer.
+
+Without tools to systematically process this text, utilities lose opportunities to learn from past events, identify emerging risks, and streamline compliance reporting.
+
+
+\subsection{The Analytics Solution: Applying Natural Language Processing}\label{the-analytics-solution-applying-natural-language-processing}
+
+Natural language processing (NLP) converts unstructured text into structured data for analysis. Utilities can apply NLP to maintenance logs, incident reports, regulatory documents, and even customer service notes.
+
+One approach is classification—models can be trained to label records automatically (distinguishing routine inspection notes from failure events, for example), allowing utilities to filter and prioritize records quickly. Another is entity extraction, which identifies key terms from text (asset IDs, equipment types, or failure modes) that can then be linked to operational or asset data for further analysis.
+
+More advanced NLP techniques can summarize long documents, flag unusual or high-risk language in reports, and cluster similar incidents to identify systemic issues. This reduces the burden on staff and uncovers insights hidden in narrative text.
+
+
+\subsection{NLP Basics for Utilities}\label{nlp-basics-for-utilities}
+
+NLP involves several steps to process text: text preprocessing (including lowercasing, removing punctuation, and handling special characters), tokenization (splitting text into words or subwords), feature extraction (converting text to numerical features using TF-IDF or word embeddings), model training (using classification or extraction models on these features), and post-processing (formatting outputs for downstream systems).
+
+TF-IDF (Term Frequency-Inverse Document Frequency) is a common feature extraction method that weights words by how frequently they appear in a document while penalizing words that appear in many documents, creating sparse feature vectors suitable for traditional ML models.
+
+For utility text, domain-specific terms often have high TF-IDF scores (transformer, breaker, and relay, for example), making them useful for classification.
+
+Pipeline monitoring systems demonstrate this challenge. Field inspectors write free-form notes about equipment condition. These inspection logs are messy. Spelling errors, inconsistent terminology, unstructured descriptions are examples. The challenge is converting these free-text notes into structured, actionable data. An inspector might write: ``Found some corrosion on the pipeline segment near mile marker 45. Recommend installing a clamp to maintain integrity.'' That needs to be categorized into standardized service recommendations. ``Clamp installation,'' ``coupling replacement,'' ``pigging,'' or ``valve maintenance'' are examples.
+
+Using AI query functions with LLMs, utilities can automatically categorize these notes. The system takes the free-text description. It applies a prompt that instructs the model to categorize it into one of several predefined service types. It returns a structured recommendation. This can be integrated directly into data pipelines using Delta Live Tables. As inspection notes are ingested, they're automatically categorized and made available for analysis.
+
+The system can also summarize lengthy notes. A long paragraph describing multiple observations gets condensed to: ``Pipeline inspection found in compliance, but recommended clamp installation for continued integrity.'' That makes the information more accessible for dashboards and reporting. Quality control can be built in using data quality expectations. The system validates that the recommended service type matches one of the predefined categories. It flags any that don't for human review. That creates a feedback loop. The prompt can be refined based on edge cases.
+
+This approach transforms a manual, time-consuming process into an automated pipeline. Analysts would read each note and tag it. The pipeline enables predictive maintenance workflows. That's a step that probably gets overlooked. It keeps us from really being in this predictive maintenance mindset.
+
+
+\subsection{Domain-Specific Language Challenges}\label{domain-specific-language-challenges}
+
+Utility text contains specialized terminology that general NLP models may not recognize well. Equipment names include identifiers (TX-101, Substation A, and Feeder 12), technical terms include phrases (dissolved gas analysis, partial discharge, and tap changer), and acronyms such as SCADA, AMI, DER, and NERC CIP are common. Field crews use abbreviations and shorthand that may be inconsistent.
+
+Strategies to handle this include custom tokenization (preserving equipment IDs and acronyms as single tokens), domain dictionaries (maintaining lists of utility-specific terms), fine-tuning (training models on utility text rather than general corpora), and rule-based extraction (combining ML with regex patterns for structured data such as asset IDs).
+
+
+\subsection{Compliance and Operational Benefits}\label{compliance-and-operational-benefits}
+
+NLP has immediate applications in compliance. Regulatory standards like NERC CIP or state-level reliability requirements often require documented evidence (inspections, testing, and maintenance), and automating extraction of this evidence from logs and work orders accelerates audit preparation while reducing the risk of missing required documentation.
+
+In operations, analyzing historical incident reports with NLP can reveal patterns (recurring failures linked to specific equipment models or environmental conditions, for example). Control room logs can be mined for operational anomalies or deviations that merit further review. By connecting text-based records to other datasets, utilities create a more comprehensive picture of asset health and operational performance.
+
+
+\subsection{Building NLP Models for Utility Text}\label{building-nlp-models-for-utility-text}
+
+We apply NLP to utility maintenance logs and compliance documents. I'm showing you both classification and entity extraction. Categorizing logs is classification. Finding equipment references is entity extraction. These are the two most common NLP tasks in utilities.
+
+We generate synthetic maintenance logs to simulate real utility text data.
+
+\lstinputlisting[firstline=19,lastline=32]{../code/c11_nlp4u.py}
+
+This creates realistic inspection notes and failure reports with labels (routine vs.~failure), simulating text data utilities collect from field crews and control centers. In practice, you'd pull this from your work order system or maintenance logs.
+
+We classify logs using TF-IDF and logistic regression to prioritize high-risk events.
+
+\lstinputlisting[firstline=33,lastline=50]{../code/c11_nlp4u.py}
+
+This shows how TF-IDF converts text to numerical features, then a logistic regression model classifies logs as routine or failure-related, enabling automatic prioritization where failure-related logs get immediate attention. The classification report shows precision, recall, and F1-score—high recall means we catch most actual failure events, which is critical for utilities. Utilities use this to automatically route high-priority logs to the right teams, cutting response time in half.
+
+We extract entities and equipment terms to link text to asset databases.
+
+\lstinputlisting[firstline=51,lastline=69]{../code/c11_nlp4u.py}
+
+This uses spaCy (if available) or rule-based extraction to identify named entities and utility-specific equipment terms. The structured extraction enables linking text to asset databases and compliance systems.
+
+The complete, runnable script with imports, configuration, and main execution is available at \texttt{content/c11/nlp4u.py} in the repository.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+NLP unlocks value in unstructured text. Maintenance logs, inspection reports, and compliance documents contain insights that are difficult to extract manually. Classification and extraction are the foundation—most utility NLP applications involve categorizing text or extracting structured information (asset IDs and failure modes, for example).
+
+Domain-specific language matters. Utility jargon requires custom handling because general NLP models may miss important terms or misinterpret context. TF-IDF combined with logistic regression is a solid baseline—simple approaches often work well for utility text. Only move to complex models like transformers or LLMs when needed. Teams jump to LLMs when simple TF-IDF would have worked fine—start simple.
+
+NLP integrates with operational systems. Extracted information should feed into work orders, compliance dashboards, and asset management. Not just sit in reports. The Stockland Island project showed me that NLP is only useful if it surfaces the 1\% that matters. Not the 99\% that doesn't.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 12, we'll explore large language models and multimodal AI. We'll combine text, images, and sensor data to create comprehensive operational intelligence. Then in Chapter 14, we'll dive into MLOps. The processes and tools needed to move ML models from notebooks to production.

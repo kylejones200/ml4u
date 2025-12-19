@@ -1,9 +1,0 @@
-data:
-  file_path: "data/CICIDS2017_sample.csv"
-
-model:
-  random_state: 42
-  test_size: 0.2
-  contamination: 0.1
-  n_estimators: 150
-

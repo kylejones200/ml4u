@@ -1,0 +1,126 @@
+\chapter{Causal Inference}\label{ch:causal-inference}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand why utilities need causal inference methods to evaluate program effectiveness. You'll learn Difference-in-Differences (DiD) to measure treatment effects when you have treated and control groups over time. You'll see how Synthetic Control creates a counterfactual to estimate policy impacts. You'll apply Propensity Score Matching to control for selection bias, and you'll recognize when each method is appropriate for evaluating demand response programs, energy efficiency initiatives, and regulatory policies.
+
+
+\subsection{The Business Problem: Proving Program Value}\label{the-business-problem-proving-program-value}
+
+Utilities invest millions of dollars in programs designed to change customer behavior or improve grid operations. Demand response programs pay customers to reduce load during peak periods, energy efficiency programs subsidize efficient appliances or home weatherization, time-of-use rates shift consumption to off-peak hours, and grid modernization initiatives deploy smart devices to improve reliability.
+
+The question is: do these programs actually work? And if they do, by how much?
+
+This isn't just academic curiosity. Regulators require utilities to demonstrate program effectiveness to justify rate recovery. Shareholders need evidence that investments deliver returns. Operations teams need to know whether programs are worth continuing or expanding. Without rigorous evaluation, utilities risk continuing ineffective programs or canceling ones that actually deliver value.
+
+I've seen utilities spend years running demand response programs without knowing if they actually reduced peak load. They had participation data, but they couldn't prove the program caused the reduction versus other factors like weather or economic conditions.
+
+The challenge is that correlation isn't causation. If peak load decreased after launching a demand response program, that doesn't mean the program caused the reduction. Maybe a mild summer reduced cooling demand, maybe an economic downturn reduced industrial load, maybe customers were already shifting behavior for other reasons. To prove program effectiveness, utilities need methods that can isolate the program's impact from other factors.
+
+
+\subsection{The Analytics Solution: Causal Inference Methods}\label{the-analytics-solution-causal-inference-methods}
+
+Causal inference provides statistical tools to estimate treatment effects—the causal impact of a program, policy, or intervention. Unlike predictive models that forecast outcomes, causal models answer ``what if'' questions: what would have happened if we hadn't launched the program? This counterfactual reasoning is essential for program evaluation.
+
+Three methods are particularly valuable for utilities:
+
+\textbf{Difference-in-Differences (DiD)} compares changes over time between a treated group (customers in the program) and a control group (similar customers not in the program). The key assumption is parallel trends: both groups would have followed similar trajectories in the absence of treatment. DiD is ideal when you have before/after data for both groups.
+
+\textbf{Synthetic Control} creates a weighted combination of control units that closely matches the treated unit's pre-treatment characteristics. This synthetic unit serves as the counterfactual. Synthetic Control is powerful when you have one or a few treated units and many potential controls, such as evaluating a state-level policy.
+
+\textbf{Propensity Score Matching} matches treated units to similar control units based on observable characteristics, then compares outcomes. This addresses selection bias—the concern that program participants differ systematically from non-participants. PSM is valuable when you can't randomly assign treatment but have rich data on participant characteristics.
+
+These methods aren't just academic exercises. Utilities use them to evaluate demand response effectiveness, measure energy efficiency savings, assess rate design impacts, and justify regulatory filings. The methods provide the evidence needed to make data-driven decisions about program continuation, expansion, or termination.
+
+
+\subsection{Understanding Difference-in-Differences}\label{understanding-difference-in-differences}
+
+Difference-in-Differences estimates treatment effects by comparing the change in outcomes for treated units to the change for control units. The ``difference-in-differences'' name comes from taking the difference of differences: (treated\_post - treated\_pre) - (control\_post - control\_pre).
+
+The key assumption is parallel trends: in the absence of treatment, treated and control groups would have followed similar trajectories. This assumption can be tested by examining pre-treatment trends. If trends are parallel before treatment, it's reasonable to assume they would have remained parallel without treatment.
+
+DiD is widely used in utility program evaluation. For example, a utility might compare peak load reduction for customers enrolled in a demand response program versus similar customers not enrolled. The DiD estimate isolates the program's impact from seasonal effects, economic conditions, or other factors affecting both groups.
+
+The code demonstrates DiD using state-level emissions data, where certain states implement carbon pricing policies (the treatment) and others don't (the control). This mirrors how utilities evaluate programs: some customers participate, others don't, and you want to measure the program's causal effect.
+
+
+\subsection{Synthetic Control Method}\label{synthetic-control-method}
+
+Synthetic Control creates a counterfactual by finding optimal weights for control units that best match the treated unit's pre-treatment characteristics. The synthetic unit is a weighted average of controls, constructed to closely track the treated unit before treatment begins.
+
+After treatment, the synthetic unit continues to represent what would have happened without treatment. The difference between the treated unit and its synthetic control after treatment is the estimated treatment effect.
+
+Synthetic Control is particularly powerful when you have one treated unit (like a single state or utility) and many potential controls. It's more flexible than DiD because it doesn't require a single control group---instead, it creates a custom counterfactual from multiple controls.
+
+Utilities can use Synthetic Control to evaluate the impact of major policy changes, rate redesigns, or large-scale program deployments. For example, if a utility launches a comprehensive smart grid initiative in one service territory, Synthetic Control can estimate the impact by creating a synthetic version of that territory from similar territories that didn't receive the treatment.
+
+
+\subsection{Propensity Score Matching}\label{propensity-score-matching}
+
+Propensity Score Matching addresses selection bias---the concern that program participants differ systematically from non-participants in ways that affect outcomes. For example, customers who enroll in demand response programs might be more energy-conscious or have more flexible loads, making them more likely to reduce consumption regardless of the program.
+
+PSM matches each treated unit to one or more control units with similar propensity scores---the probability of receiving treatment given observable characteristics. By comparing matched pairs, PSM isolates the treatment effect from selection bias.
+
+The process involves: estimating propensity scores using logistic regression or similar methods, matching treated units to controls with similar scores, and comparing outcomes between matched pairs.
+
+PSM is valuable when you can't randomly assign treatment but have rich data on participant characteristics. Utilities often use PSM to evaluate voluntary programs where self-selection is a concern.
+
+
+\subsection{Business Applications}\label{business-applications}
+
+Causal inference methods enable utilities to make evidence-based decisions about program investments. Demand response programs can be evaluated to measure actual peak load reduction, not just participation rates. Energy efficiency programs can demonstrate verified savings to justify rate recovery. Rate design changes can be assessed to understand customer response and bill impacts.
+
+Regulatory compliance often requires rigorous program evaluation. State public utility commissions require utilities to demonstrate program effectiveness through impact evaluations. Causal inference methods provide the statistical rigor needed to meet these requirements.
+
+Program optimization benefits from understanding what works and what doesn't. If DiD shows a demand response program reduces peak load by 5\%, but the program costs more than the value of that reduction, the utility can redesign or discontinue the program. If Synthetic Control reveals that a rate redesign increased customer satisfaction without increasing costs, the utility can expand the program.
+
+Resource allocation improves when utilities know which programs deliver the most value. Causal inference helps prioritize investments by quantifying returns. A program that reduces peak load by 10\% might be worth expanding, while one that reduces it by 1\% might not justify continued investment.
+
+
+\subsection{Building Causal Inference Models}\label{building-causal-inference-models}
+
+Let's evaluate a hypothetical policy using all three methods. The example uses state-level emissions data to assess the impact of carbon pricing policies, but the same approaches apply to utility program evaluation.
+
+First, we load and prepare state-level data:
+
+\lstinputlisting[firstline=26,lastline=46]{../code/c27_causal_inference.py}
+
+This aggregates plant-level data to state-year observations, creating the panel data structure needed for causal inference. In practice, utilities would aggregate customer-level data to program participation groups or service territories.
+
+Next, we apply Difference-in-Differences:
+
+\lstinputlisting[firstline=48,lastline=135]{../code/c27_causal_inference.py}
+
+The DiD analysis creates treatment indicators, checks parallel trends assumption, and estimates the treatment effect. The regression includes clustered standard errors to account for correlation within states over time. The event study examines dynamic effects, showing how the treatment impact evolves over time.
+
+Then, we demonstrate Synthetic Control:
+
+\lstinputlisting[firstline=137,lastline=227]{../code/c27_causal_inference.py}
+
+Synthetic Control finds optimal weights for control states that best match the treated state's pre-treatment trajectory. The method creates a synthetic counterfactual and compares post-treatment outcomes. This is particularly useful when you have one treated unit and many potential controls.
+
+Finally, we apply Propensity Score Matching:
+
+\lstinputlisting[firstline=229,lastline=332]{../code/c27_causal_inference.py}
+
+PSM estimates propensity scores, matches treated units to similar controls, and compares outcomes. This addresses selection bias by ensuring treated and control groups are comparable on observable characteristics.
+
+The complete, runnable script is at \texttt{content/c27/causal\_inference.py}. These methods provide the statistical rigor needed to evaluate program effectiveness and meet regulatory requirements.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Causal inference is essential for program evaluation. Correlation doesn't imply causation---utilities need methods that isolate program impacts from other factors. The three methods serve different purposes: DiD for before/after comparisons with controls, Synthetic Control for single-unit evaluations, and PSM for addressing selection bias.
+
+Assumptions matter. Each method relies on assumptions that must be tested. DiD requires parallel trends, Synthetic Control needs good pre-treatment fit, and PSM assumes no unobserved confounders. Always test assumptions before trusting results.
+
+Regulatory requirements often demand rigorous evaluation. State commissions require impact evaluations that demonstrate program effectiveness. Causal inference methods provide the statistical rigor needed to meet these requirements.
+
+Program decisions should be evidence-based. Utilities invest millions in programs---they need to know what works. Causal inference provides the evidence needed to make data-driven decisions about program continuation, expansion, or termination.
+
+Start with the simplest method that fits your data. DiD is often the most straightforward when you have treated and control groups over time. Synthetic Control is powerful for single-unit evaluations. PSM addresses selection bias when participation is voluntary.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 28, we'll explore Multi-Task Learning---training models to predict multiple related outcomes simultaneously. This is valuable when utilities need to forecast several related metrics, such as different types of emissions or multiple asset health indicators. The principles of shared learning and task relationships complement the causal inference methods we've covered here.

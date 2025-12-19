@@ -70,3 +70,7 @@ chapter_test_report.*
 
 # Training run artifacts
 runs/
+
+# Book export output
+book_output/
+cursor

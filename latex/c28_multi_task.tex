@@ -1,0 +1,107 @@
+\chapter{Multi-Task Learning}\label{ch:multi-task}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand why multi-task learning improves prediction accuracy when utilities need to forecast multiple related metrics. You'll learn to build neural networks with shared layers that learn common patterns across tasks. You'll see how multi-task learning reduces overfitting and improves generalization compared to training separate models. You'll apply this to simultaneous prediction of multiple emissions types, and you'll recognize when multi-task learning is appropriate for utility applications.
+
+
+\subsection{The Business Problem: Predicting Multiple Related Outcomes}\label{the-business-problem-predicting-multiple-related-outcomes}
+
+Utilities often need to predict multiple related metrics simultaneously. A power plant might need forecasts for CO2, NOx, and SO2 emissions—all driven by the same generation and fuel inputs. A grid operator might need to predict voltage, frequency, and reactive power at multiple substations—all influenced by the same load and generation patterns. A utility might need to forecast demand, price, and reserve requirements—all connected to the same market and weather conditions.
+
+The traditional approach is to train separate models for each metric. This works, but it misses opportunities. When outcomes are related, they share underlying patterns, and a model that learns these shared patterns can make better predictions than models trained in isolation.
+
+I've seen utilities train three separate models for emissions prediction, each using the same input features. They were essentially learning the same patterns three times, wasting compute and missing the chance to improve accuracy through shared learning.
+
+The challenge is that separate models don't share information. Each model learns independently, which means they can't leverage common patterns. If CO2 and NOx emissions both depend on generation levels and fuel type, a model that learns this relationship once should perform better than models that learn it separately.
+
+Multi-task learning addresses this by training a single model to predict multiple outcomes simultaneously. The model learns shared representations that benefit all tasks, while task-specific layers capture unique patterns. This approach often improves accuracy, reduces overfitting, and requires less data than training separate models.
+
+
+\subsection{The Analytics Solution: Shared Learning Across Tasks}\label{the-analytics-solution-shared-learning-across-tasks}
+
+Multi-task learning trains a single model to predict multiple related outcomes. The architecture typically includes shared layers that learn common patterns, followed by task-specific heads that capture unique relationships. This design allows the model to leverage shared information while maintaining task-specific capabilities.
+
+The key insight is that related tasks share underlying structure. For emissions prediction, CO2, NOx, and SO2 all depend on generation, fuel type, and operating conditions. A shared representation that captures these relationships benefits all three predictions—the model learns once that higher generation increases all emissions, rather than learning this pattern separately for each task.
+
+Multi-task learning provides several advantages: \textbf{Improved accuracy} (shared representations capture common patterns better than separate models), \textbf{Reduced overfitting} (the model must learn patterns that work for multiple tasks, acting as a form of regularization), \textbf{Data efficiency} (shared learning means less data is needed per task), and \textbf{Consistency} (related predictions are coherent—if generation increases, all emissions should increase together).
+
+Utilities use multi-task learning for emissions prediction, multi-asset health monitoring, joint load and price forecasting, and simultaneous prediction of multiple grid metrics. The approach is particularly valuable when tasks are related and data is limited.
+
+
+\subsection{Understanding Multi-Task Neural Networks}\label{understanding-multi-task-neural-networks}
+
+Multi-task neural networks use hard parameter sharing, where early layers are shared across all tasks and later layers are task-specific. The shared layers learn common representations, while task-specific heads capture unique patterns.
+
+The architecture typically includes: \textbf{Input layer} (receiving features like generation, capacity, and operating conditions), \textbf{Shared layers} (learning common patterns that benefit all tasks), \textbf{Task-specific heads} (capturing unique relationships for each outcome), and \textbf{Output layers} (producing predictions for each task).
+
+Training involves minimizing a combined loss function that includes errors for all tasks. The model balances learning shared patterns that help all tasks with task-specific patterns that improve individual predictions. This balance is critical—too much sharing can hurt tasks with unique patterns, while too little sharing misses common benefits.
+
+The code demonstrates multi-task learning for emissions prediction, where a single model predicts CO2, NOx, and SO2 simultaneously. The model learns that higher generation increases all emissions, while task-specific layers capture differences in how each pollutant responds to operating conditions.
+
+
+\subsection{When to Use Multi-Task Learning}\label{when-to-use-multi-task-learning}
+
+Multi-task learning is most effective when tasks are related but not identical. If tasks are too similar, a single model might suffice. If tasks are unrelated, separate models perform better. The sweet spot is tasks that share underlying structure but have distinct characteristics.
+
+For utilities, good candidates include: \textbf{Emissions prediction} (CO2, NOx, and SO2 share generation and fuel dependencies), \textbf{Multi-asset health} (different equipment types share degradation patterns), \textbf{Joint forecasting} (load, price, and reserves share market and weather drivers), and \textbf{Grid metrics} (voltage, frequency, and reactive power share system state).
+
+The approach works best when you have limited data per task. Shared learning means the model can leverage data from all tasks, improving performance when individual task datasets are small. If you have abundant data for each task, separate models might perform similarly, though multi-task learning can still provide consistency benefits.
+
+
+\subsection{Business Applications}\label{business-applications}
+
+Multi-task learning enables utilities to make more accurate and consistent predictions across related metrics. Emissions prediction benefits from shared learning about generation and fuel impacts, improving accuracy for all pollutants. Multi-asset health monitoring can predict failure risk for transformers, breakers, and other equipment using shared degradation patterns.
+
+Joint forecasting of load, price, and reserves helps grid operators make coordinated decisions. Instead of separate forecasts that might be inconsistent, multi-task learning ensures predictions are coherent—if load increases, price and reserve requirements should increase together.
+
+The approach also reduces computational costs. Training one multi-task model is often faster than training multiple separate models, and inference requires only one forward pass to get all predictions. This efficiency is valuable for real-time applications where latency matters.
+
+
+\subsection{Building Multi-Task Learning Models}\label{building-multi-task-learning-models}
+
+Let's build a multi-task model to predict CO2, NOx, and SO2 emissions simultaneously. The model learns shared patterns about how generation and operating conditions affect emissions, while task-specific layers capture unique pollutant characteristics.
+
+First, we prepare the data:
+
+\lstinputlisting[firstline=29,lastline=61]{../code/c28_multi_task_learning.py}
+
+This creates features from power plant data (capacity, generation, heat input, capacity factor, and heat rate). The targets are log-transformed emissions (CO2, NOx, SO2) to handle the wide range of values. Log transformation is common for emissions data because it stabilizes variance and improves model performance.
+
+Next, we build the multi-task model:
+
+\lstinputlisting[firstline=63,lastline=97]{../code/c28_multi_task_learning.py}
+
+The architecture uses hard parameter sharing: shared layers learn common patterns, while task-specific heads capture unique relationships. Batch normalization and dropout help prevent overfitting. The model outputs three predictions simultaneously—one for each pollutant.
+
+We train the model:
+
+\lstinputlisting[firstline=99,lastline=188]{../code/c28_multi_task_learning.py}
+
+Training minimizes a combined loss function that includes errors for all three tasks. The model balances learning shared patterns that help all tasks with task-specific patterns that improve individual predictions. Early stopping prevents overfitting, and learning rate reduction helps fine-tune the model.
+
+Finally, we compare to single-task baselines:
+
+\lstinputlisting[firstline=190,lastline=225]{../code/c28_multi_task_learning.py}
+
+The comparison shows whether multi-task learning improves performance. Typically, multi-task models achieve 2-5\% better accuracy than separate models, with the biggest gains when data is limited. The shared learning acts as regularization, reducing overfitting and improving generalization.
+
+The complete, runnable script is at \texttt{content/c28/multi\_task\_learning.py}. This demonstrates how multi-task learning can improve prediction accuracy for related utility metrics.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Multi-task learning improves accuracy when predicting related outcomes. Shared representations capture common patterns better than separate models, leading to 2-5\% accuracy improvements in typical utility applications. The approach is most valuable when tasks share underlying structure but have distinct characteristics.
+
+Data efficiency is a key benefit. Shared learning means the model can leverage data from all tasks, improving performance when individual task datasets are small. This is particularly valuable for utilities with limited historical data for some metrics.
+
+Consistency matters for operational decisions. Multi-task learning ensures related predictions are coherent—if generation increases, all emissions should increase together. This consistency helps operators make better decisions than separate forecasts that might be inconsistent.
+
+Architecture design is important. Too much sharing can hurt tasks with unique patterns, while too little sharing misses common benefits. The balance depends on how related the tasks are—experiment to find the right level of sharing.
+
+Start simple, then expand. Begin with two related tasks to validate the approach, then add more tasks as you gain experience. Multi-task learning requires more careful tuning than single-task models, but the accuracy and consistency benefits are often worth it.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 13, we'll explore enterprise integration---connecting ML models with GIS, SCADA, and EAM systems to create unified operational intelligence. Multi-task learning fits naturally into these integrated systems, where related predictions from different domains can benefit from shared learning.

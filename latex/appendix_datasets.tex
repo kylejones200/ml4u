@@ -1,0 +1,42 @@
+\begin{longtable}{p{0.20\linewidth}p{0.35\linewidth}p{0.40\linewidth}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Chapter}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Datasets Used}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Purpose / Machine Learning Techniques}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{0. Preface} & None & Introduction and context \\
+\textbf{0. Executive Summary} & None & Overview of ML applications in utilities \\
+\textbf{1. Introduction to Machine Learning in Power and Utilities} & Synthetic load and temperature data & Simple regression and visualization of utility data trends \\
+\textbf{2. Data in Power and Utilities} & Smart meter consumption data (\texttt{smart\_meter\_sample.csv}), Synthetic SCADA frequency data & Data cleaning, resampling, outlier detection (Hampel filter), heatmap visualization, baseload estimation, FFT analysis, peak detection \\
+\textbf{3. Machine Learning Fundamentals} & Synthetic load curves, temperature data & Regression (load prediction), classification (asset health labels), clustering (AMI load profiles) \\
+\textbf{4. Load Forecasting and Demand Analytics} & Synthetic hourly load time series & Time series forecasting (ARIMA, LSTM), regression (weather vs.~load) \\
+\textbf{5. Predictive Maintenance for Grid Assets} & SCADA telemetry (temperature, vibration, oil quality), Synthetic asset data & Classification (failure prediction), anomaly detection (early degradation signals) \\
+\textbf{6. Outage Prediction and Reliability Analytics} & Synthetic weather data (wind speed, rainfall, tree density), Asset age data & Classification (storm outage risk), geospatial joins for feeder exposure \\
+\textbf{7. Grid Operations Optimization} & Synthetic SCADA voltage/reactive power data & Reinforcement learning (voltage control), optimization for VAr dispatch \\
+\textbf{8. Renewable Integration and DER Forecasting} & NREL NSRDB solar irradiance data (clearsky), Synthetic PV generation profiles & Time series forecasting (SARIMA for PV output), regression (PV power modeling) \\
+\textbf{9. Customer Analytics and Demand Response} & Synthetic AMI smart meter data, Customer load profiles & Clustering (customer segments using average day profiles), classification (participation prediction) \\
+\textbf{10. Computer Vision for Utilities} & IEEE Power Line Detection (PLD) dataset, Synthetic drone imagery & CNN-based defect detection, segmentation (vegetation encroachment), object detection (YOLO) \\
+\textbf{11. Natural Language Processing for Maintenance and Compliance} & Synthetic inspection logs, Maintenance incident logs & Text classification (routine vs.~failure), entity extraction (assets, failure modes), LLM-based analysis \\
+\textbf{12. Large Language Models and Multimodal AI for Utilities} & Maintenance logs (text) + SCADA telemetry (structured) + drone imagery (vision) & Multimodal AI combining text, structured data, and image insights \\
+\textbf{13. Integration with Enterprise Systems} & GIS shapefiles (feeder maps), SCADA telemetry & Unified data pipelines linking IT/OT systems, geospatial analysis \\
+\textbf{14. MLOps for Utilities} & SCADA telemetry, Transformer asset data & Model versioning (MLflow), automated retraining workflows, real-time inference (FastAPI, Kafka) \\
+\textbf{15. Integrated Pipelines and Orchestration} & Combined datasets (load, outage, maintenance) & Automated scheduling of multi-model analytics, workflow orchestration (Prefect) \\
+\textbf{16. Full Utility AI Platform Deployment} & Combined datasets from prior chapters & Real-time model deployment (API endpoints, streaming inference) \\
+\textbf{17. Cybersecurity Analytics for Critical Infrastructure} & CICIDS2017 network traffic dataset (\texttt{CICIDS2017\_sample.csv}), Synthetic SCADA logs & Anomaly detection (unsupervised), intrusion classification (supervised ML) \\
+\textbf{18. AI Ethics, Regulation, and the Future of Utilities} & Predictive maintenance risk outputs (urban vs.~rural segmentation) & Fairness audits (performance parity), explainability (SHAP analysis) \\
+\textbf{19. Cost Optimization and ROI for Utility ML Projects} & Combined datasets from prior chapters & Scenario modeling of AI maturity impacts (cost savings, SAIDI/SAIFI improvement) \\
+\textbf{20. Future Trends and Strategic Roadmap for AI in Utilities} & Aggregate datasets from prior chapters & Scenario modeling of AI maturity impacts on KPIs \\
+\textbf{21. Epilogue} & None & Conclusion and future directions \\
+\textbf{22. Real-Time Analytics and Control Room Integration} & Streaming SCADA telemetry (voltage, current, power), Real-time sensor data & Real-time anomaly detection, alerting, control room dashboards \\
+\textbf{23. Regulatory Compliance and Reliability Reporting} & Outage data (SAIDI, SAIFI, CAIDI, MAIFI metrics), Customer interruption data & Reliability metrics calculation, compliance reporting, outage analysis \\
+\textbf{24. Feature Engineering for Utility Data} & Weather data, temporal features, geospatial coordinates, asset metadata & Temporal features (hour, day, season), geospatial features (distance to coast, elevation), weather lags \\
+\textbf{25. Reliability Analytics and Performance Metrics} & Outage data (duration, customers affected, causes), Asset inventory & Reliability prediction models, outage cause analysis, performance benchmarking \\
+\textbf{26. Market Operations and Energy Trading} & Market pricing data (hourly prices), Load forecasts, Temperature data & Price forecasting, bidding optimization, risk analysis (VaR) \\
+\end{longtable}

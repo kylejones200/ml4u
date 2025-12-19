@@ -1,0 +1,169 @@
+\chapter{Feature Engineering}\label{ch:feature-engineering}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand how to engineer features that capture utility domain knowledge. You'll learn to create weather features like cooling and heating degree days. You'll see how temporal features capture daily, weekly, and seasonal patterns. You'll recognize how geospatial features encode location context, and you'll appreciate how grid topology features model asset relationships. Most importantly, you'll learn that good features often matter more than sophisticated models.
+
+
+\subsection{The Business Problem: Making Data Useful for Machine Learning}\label{the-business-problem-making-data-useful-for-machine-learning}
+
+Raw utility data is rarely ready for machine learning. SCADA telemetry shows voltage and current, but models need features that capture relationships—how weather affects demand, how time of day influences load patterns, how asset age correlates with failure risk. Feature engineering transforms raw data into representations that ML algorithms can learn from.
+
+I've seen projects fail because teams jumped straight to modeling without thinking about features. They'd throw raw sensor readings into a model and wonder why it didn't work. The problem wasn't the algorithm—it was that the data didn't encode the relationships that matter for the problem.
+
+Feature engineering is where domain expertise meets data science. Engineers know that transformer temperature depends on loading and ambient conditions, not just current. Planners know that load patterns vary by day of week and season, not just time of day. Field crews know that equipment in coastal areas fails differently than equipment in desert regions. Good features capture this knowledge.
+
+The challenge is that utility data comes from diverse sources with different formats, units, and time scales. Weather data is hourly, SCADA is every few seconds, AMI is 15-minute intervals, and asset records are event-based. Feature engineering must align these sources, handle missing values, and create meaningful aggregations.
+
+
+\subsection{The Analytics Solution: Domain-Specific Feature Engineering}\label{the-analytics-solution-domain-specific-feature-engineering}
+
+Feature engineering for utilities involves several categories: weather features (capturing how temperature, humidity, and precipitation affect operations), temporal features (modeling daily, weekly, seasonal, and holiday patterns), geospatial features (encoding location context like distance to coast, elevation, and vegetation density), grid topology features (modeling asset relationships like feeder loading, transformer age, and circuit configuration), and asset interaction features (capturing upstream/downstream relationships and equipment dependencies).
+
+Each category requires understanding utility operations. Weather features aren't just temperature—they're cooling degree days that drive air conditioning load, heating degree days that drive heating load, and wind speed that affects renewable generation. Temporal features aren't just timestamps—they're day-of-week effects that capture weekend vs.~weekday patterns, hour-of-day effects that capture daily load curves, and seasonal effects that capture annual cycles.
+
+The code demonstrates creating these features from raw data, showing how to compute degree days, extract temporal patterns, and join geospatial context. The goal is to create features that are interpretable, predictive, and aligned with domain knowledge.
+
+
+\subsection{Weather Feature Engineering}\label{weather-feature-engineering}
+
+Weather is one of the strongest drivers of utility operations. Temperature drives heating and cooling demand. Wind speed affects renewable generation. Precipitation influences vegetation growth and outage risk. Weather features capture these relationships in forms that ML models can use.
+
+\textbf{Cooling Degree Days (CDD)} measure how much warmer the temperature is than a base temperature (typically 65°F). CDD = max(0, average\_temp - 65). Higher CDD means more air conditioning load, and utilities use CDD to forecast summer peak demand.
+
+\textbf{Heating Degree Days (HDD)} measure how much colder the temperature is than the base. HDD = max(0, 65 - average\_temp). Higher HDD means more heating load, and utilities use HDD to forecast winter demand.
+
+\textbf{Wind Chill} combines temperature and wind speed to measure perceived cold, affecting heating demand more than temperature alone. Wind chill = 35.74 + 0.6215\emph{T - 35.75}V\^{}0.16 + 0.4275\emph{T}V\^{}0.16, where T is temperature and V is wind speed.
+
+\textbf{Humidity} affects perceived temperature and equipment performance. High humidity makes hot temperatures feel worse, increasing cooling demand. It also affects equipment corrosion and failure rates.
+
+\textbf{Precipitation} influences vegetation growth (affecting outage risk) and can cause flooding that damages equipment. Cumulative precipitation over days or weeks provides better signal than daily values.
+
+The code shows how to compute these features from weather station data, joining them with load or outage data to create training datasets. The key is aligning weather data with operational data by time and location.
+
+
+\subsection{Temporal Feature Engineering}\label{temporal-feature-engineering}
+
+Time-based patterns dominate utility operations. Load varies by hour of day, day of week, and season. Outages cluster during storms and peak demand periods. Maintenance follows seasonal schedules. Temporal features capture these patterns.
+
+\textbf{Hour of Day} encodes daily cycles. Morning ramp-up, midday plateau, evening peak, and overnight low create distinct patterns, and one-hot encoding or sine/cosine transforms can capture cyclical patterns.
+
+\textbf{Day of Week} captures weekday vs.~weekend differences. Commercial load drops on weekends, residential load may increase, and Monday mornings show different patterns than Friday afternoons.
+
+\textbf{Day of Year} or \textbf{Season} captures annual cycles. Summer peaks differ from winter peaks, spring and fall show transition patterns, and sine/cosine transforms with annual periodicity (365 days) can capture smooth seasonal variation.
+
+\textbf{Holiday Indicators} flag special days when load patterns differ. Christmas, New Year's, Independence Day, and Labor Day show distinct patterns. Some utilities create custom holiday calendars for local events.
+
+\textbf{Time Since Events} measures elapsed time since significant events (days since last maintenance, weeks since last storm, months since equipment installation), capturing aging and degradation effects.
+
+The code demonstrates extracting these features from timestamps, showing how to create cyclical encodings that preserve temporal relationships. The goal is to give models information about when events occur, not just that they occur.
+
+
+\subsection{Geospatial Feature Engineering}\label{geospatial-feature-engineering}
+
+Location matters for utilities. Equipment in coastal areas faces salt corrosion. Mountain regions have different weather patterns. Urban areas have higher load density. Geospatial features encode this context.
+
+\textbf{Distance to Coast} affects corrosion rates for equipment. Coastal areas have higher failure rates for metal components. Distance can be computed from asset coordinates to nearest coastline.
+
+\textbf{Elevation} affects temperature (higher is colder) and weather patterns. Mountain regions have different load patterns and equipment failure rates than lowland areas.
+
+\textbf{Vegetation Density} from satellite imagery indicates vegetation management needs. Dense vegetation near power lines increases outage risk. NDVI (Normalized Difference Vegetation Index) provides quantitative measures.
+
+\textbf{Population Density} correlates with load density and outage impact. Urban areas have higher customer counts per circuit, making outages affect more people.
+
+\textbf{Land Use} categories (residential, commercial, industrial, agricultural) affect load patterns and equipment types. Industrial areas have different load profiles than residential neighborhoods.
+
+\textbf{Climate Zone} classifications (from building codes or climate data) capture regional weather patterns. Utilities often operate across multiple climate zones with different characteristics.
+
+The code shows how to join geospatial features with asset or outage data, using coordinate information to look up contextual features. GIS systems provide much of this data, but it needs to be processed into ML-ready features.
+
+
+\subsection{Grid Topology Feature Engineering}\label{grid-topology-feature-engineering}
+
+Grid topology---how assets connect and relate---affects operations. Feeder loading influences transformer stress. Circuit configuration affects outage propagation. Asset age and condition create risk patterns. Topology features model these relationships.
+
+\textbf{Feeder Loading} measures how much current flows through a feeder relative to its capacity. High loading increases failure risk and voltage drop. Loading percentage = (current\_amps / rated\_amps) * 100.
+
+\textbf{Transformer Age} correlates with failure risk. Older transformers fail more frequently, but age alone isn't sufficient—condition matters too. Age features can be continuous (years) or categorical (vintage ranges).
+
+\textbf{Circuit Configuration} affects reliability. Radial circuits have single points of failure. Looped circuits provide redundancy. Configuration type (radial, looped, network) influences outage patterns.
+
+\textbf{Upstream/Downstream Relationships} model how failures propagate. A transformer failure affects all downstream customers, and upstream equipment condition affects downstream reliability. Graph-based features can encode these relationships.
+
+\textbf{Asset Density} measures how many assets serve a given area. High density means more equipment per customer, potentially higher reliability but also more maintenance needs.
+
+\textbf{Voltage Level} affects equipment types and failure modes. Distribution (12-34 kV) differs from transmission (69-765 kV) in equipment, loading, and failure patterns.
+
+The code demonstrates computing these features from asset registries and SCADA data, showing how to join topology information with operational data. The challenge is that topology data often lives in GIS systems that need to be integrated with time-series operational data.
+
+
+\subsection{Asset Interaction Features}\label{asset-interaction-features}
+
+Assets don't operate in isolation. Transformer failures affect downstream customers. Feeder maintenance impacts multiple transformers. Weather events affect entire regions. Interaction features capture these relationships.
+
+\textbf{Upstream Asset Condition} measures the health of equipment that feeds a given asset. A failing upstream transformer increases risk for downstream equipment.
+
+\textbf{Neighboring Asset Failures} count how many nearby assets have failed recently. Clustering of failures may indicate common causes (weather, age, maintenance issues).
+
+\textbf{Regional Load Patterns} aggregate load across feeders or substations. High regional load may stress individual assets. Load diversity (variance across assets) affects reliability.
+
+\textbf{Maintenance History} tracks when equipment was last maintained. Recent maintenance may reduce failure risk temporarily. Long gaps since maintenance may increase risk.
+
+\textbf{Failure Cascades} model how one failure can trigger others. A transformer failure can overload adjacent transformers, and circuit breaker operations can cause voltage sags that trip other equipment.
+
+The code shows how to create these features by aggregating and joining data across assets. The challenge is computational---with thousands of assets, computing pairwise relationships can be expensive. Efficient feature engineering requires careful data structures and algorithms.
+
+
+\subsection{Feature Selection and Importance}\label{feature-selection-and-importance}
+
+Not all features are equally useful. Some are redundant (correlated with others), some are irrelevant (don't predict the target), and some are too specific (overfit to training data). Feature selection identifies the most valuable features.
+
+\textbf{Correlation Analysis} identifies redundant features. If two features are highly correlated, one may be sufficient, but be careful—correlation doesn't mean redundancy if both add unique information.
+
+\textbf{Feature Importance} from tree-based models (Random Forest, XGBoost) ranks features by predictive power. High importance features should be retained. Low importance features may be candidates for removal.
+
+\textbf{Recursive Feature Elimination} systematically removes features and measures impact on model performance. Features that don't hurt performance when removed are candidates for elimination.
+
+\textbf{Domain Knowledge} should guide feature selection. Engineers know which features matter. Statistical methods can validate, but domain expertise should inform decisions.
+
+The code demonstrates feature importance analysis, showing how to identify which features drive model predictions. The goal is a parsimonious feature set that captures essential relationships without overfitting.
+
+
+\subsection{Handling Missing Values and Data Quality}\label{handling-missing-values-and-data-quality}
+
+Utility data has quality issues. Sensors fail, creating missing values. Communication outages cause data gaps. Different systems use different units or formats. Feature engineering must handle these problems.
+
+\textbf{Missing Value Imputation} fills gaps using statistical methods (mean, median) or more sophisticated approaches (time-series interpolation, model-based imputation). The choice depends on data characteristics and missingness patterns.
+
+\textbf{Data Quality Flags} indicate when data is questionable. SCADA systems often include quality flags (good, questionable, bad). Features should respect these flags, potentially excluding bad data or treating it specially.
+
+\textbf{Unit Normalization} ensures consistent units across data sources. Some systems report voltage in kV, others in V. Some report power in MW, others in kW. Normalization prevents unit mismatches that break models.
+
+\textbf{Outlier Handling} addresses extreme values that may be errors or rare events. Outliers can skew models if not handled appropriately. Options include capping, transformation, or separate modeling.
+
+The code shows how to handle these issues in feature engineering pipelines. The key is to make quality handling explicit and reproducible, not ad-hoc fixes that vary by dataset.
+
+
+\subsection{Case Study: Hydro-Québec's Smart Meter Data Integration}\label{case-study-hydro-quuxe9becs-smart-meter-data-integration}
+
+Hydro-Québec's Octave application processes smart meter data from 4.5 million meters across the province, handling over 1 trillion data points. The challenge wasn't just scale—it was integrating load and voltage data from millions of endpoints into features that engineers and technicians could actually use.
+
+The application is used daily by about 1,000 Hydro-Québec technicians and engineers to analyze smart meter load and voltage data. As adoption grew, the back end was migrated to Databricks to address increasingly massive scale, governance, and security requirements. The migration required optimizing query latency and user concurrency while managing complex back-end ETL processes.
+
+The feature engineering challenge here is different from typical ML problems. They're not just creating features for a single model—they're creating a platform where users can explore data interactively. This means features need to be pre-computed and stored efficiently, not calculated on-the-fly. The system processes data in streaming fashion, updating features as new meter readings arrive.
+
+What makes this work is the combination of domain expertise and technical optimization. The team had to understand how engineers actually use the data—what questions they ask, what patterns they look for—then build features that support those workflows. The optimizations targeted query latency and user concurrency, which are critical when you have 1,000 users accessing the same system.
+
+The lesson here is that feature engineering for operational systems is different from feature engineering for batch ML models. You need to think about how features will be accessed, queried, and visualized, not just how they'll improve model accuracy. The features that matter are the ones that help operators make decisions faster.
+
+Alabama Power shows another approach to multi-source feature integration. Their SPEAR and RAMP applications combine AMI data with GIS, outage management, and weather information. The Databricks platform enables this integration by providing a unified environment where different data sources can be joined efficiently. This integration allows for more comprehensive insights---correlating meter data with outage locations, weather patterns, and asset characteristics to understand what's really happening on the grid.
+
+The technical challenge is aligning data from different sources with different time scales and formats. AMI data might be 15-minute intervals, weather data hourly, and outage data event-based. Feature engineering here means creating temporal alignments, spatial joins, and aggregations that make sense for the analysis you're trying to do. The platform handles the mechanics, but the feature design requires understanding what relationships actually matter for the business problem.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Feature engineering transforms raw data into representations that capture domain knowledge. Weather features like degree days encode temperature effects on demand, temporal features capture daily, weekly, and seasonal patterns, geospatial features provide location context, grid topology features model asset relationships, and asset interaction features capture dependencies. Feature selection identifies the most valuable features, and data quality handling ensures reliable features.
+
+The goal is features that are interpretable, predictive, and aligned with domain expertise. Good features often matter more than sophisticated models. Feature engineering is where utilities can leverage their deep operational knowledge to improve ML outcomes.
+

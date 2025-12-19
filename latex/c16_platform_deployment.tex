@@ -1,0 +1,121 @@
+\chapter{Platform Deployment}\label{ch:platform-deployment}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand how to move from isolated ML pilots to enterprise-wide AI platforms. You'll learn to deploy models as containerized APIs for scalable serving. You'll see how platform architecture supports multiple models, data sources, and use cases. You'll recognize the importance of governance, security, and monitoring in production platforms. You'll appreciate the team structure and operational processes needed for platform success.
+
+
+\subsection{The Business Problem: Moving from Analytics Pilots to Enterprise Scale}\label{the-business-problem-moving-from-analytics-pilots-to-enterprise-scale}
+
+A utility built a predictive maintenance proof of concept that runs on a small data set but never graduates into production. This is the pilot purgatory problem.
+
+Utilities often find themselves stuck in a cycle of pilots. A predictive maintenance proof of concept runs on a small data set, an outage prediction model is tested in isolation during one storm season. These efforts demonstrate potential but rarely graduate into production systems—they don't run continuously, don't scale across the enterprise, and don't deliver measurable results.
+
+Great pilots that never make it to production. The technical work is done, but the operational work isn't. That's where platform deployment comes in.
+
+Barriers to scaling include disparate infrastructure, limited deployment pipelines, and governance concerns. Critical questions arise. How do we ensure that models are auditable and compliant? How do we integrate them into operational workflows without disrupting critical systems? How do we manage multiple models and ensure they stay accurate as conditions evolve?
+
+Without a structured approach to platform deployment, utilities risk accumulating isolated use cases. They don't build the robust infrastructure needed to support long-term AI adoption. This is the ``pilot purgatory'' problem. Technically sound models never deliver value because they're not connected to operations.
+
+
+\subsection{The Analytics Solution: An Enterprise AI Platform}\label{the-analytics-solution-an-enterprise-ai-platform}
+
+Deploying an enterprise-grade AI platform transforms analytics from isolated scripts into an integrated operational capability. Such platforms combine scalable compute, unified data storage, model lifecycle management, and real-time serving capabilities under a single architecture.
+
+Key components include centralized data lakes (SCADA, AMI, weather, and asset data) that enable consistent access for analytics teams, MLOps pipelines that automate model training, registration, deployment, and monitoring, API endpoints that serve predictions directly into operational systems (dashboards and mobile field tools), and security, governance, and auditing features that align with regulatory requirements.
+
+By consolidating these capabilities, utilities can deploy models that run reliably at scale. They retrain automatically. They deliver predictions directly where they are needed. Outage planning dashboards to SCADA-linked monitoring tools are examples.
+
+Shell's journey shows how this works at enterprise scale. They've achieved what they call ``wall-to-wall'' Databricks deployment as a foundational data platform. Their deployment spans the entire enterprise (retail operations, subsurface exploration, trading, R\&D, and asset management), and the platform has become part of the fabric of their digital stack. About 600 data scientists and north of 1,000 data engineers across Shell interact with Databricks as part of their day-to-day activities—the majority do this.
+
+The evolution has been significant. When Shell first started working with Databricks around 2014, they were a small startup working on Spark. Shell saw potential to leverage massive parallel processing to accelerate AI models, particularly addressing single-threaded challenges with R. The emergence of Delta Lake as a standard open-source framework for data storage helped turbocharge adoption, and MLflow for model management also helped. It transformed from just a compute framework into an emerging data platform. Shell actually worked with Databricks to develop Databricks SQL, Unity Catalog, Delta Live Tables, and Delta Sharing to manage interfaces with third parties.
+
+More recently, they've been leveraging GenAI and LLM capabilities—they're testing DBRX, using model serving capabilities, and implementing vector search. The platform creates a common data foundation across the enterprise, enabling consistent access to data and analytics capabilities. Dan Jeavons, Shell's VP for Digital Innovation, told me they use it pretty much everywhere—from retail through to subsurface, in trading, R\&D, and asset management. It's very much become part of the fabric of their digital stack. That's how you scale from pilot projects to production systems—they serve thousands of users across multiple business units and geographies.
+
+
+\subsection{Platform Architecture Overview}\label{platform-architecture-overview}
+
+A typical utility AI platform includes a data layer: data lakes like Delta Lake and S3 handle historical data, time-series databases like InfluxDB and TimescaleDB handle SCADA and AMI data, and message queues like Kafka handle real-time streams.
+
+The ML layer includes model training infrastructure (GPU clusters and distributed compute), a model registry like MLflow that handles versioning, and feature stores that enable consistent feature engineering.
+
+The serving layer includes API gateways for model endpoints, container orchestration like Kubernetes that handles scaling, and load balancers that provide high availability.
+
+The governance layer includes monitoring and alerting, audit logs and compliance tracking, and access control and security.
+
+The code demonstrates a simplified version focusing on model serving via APIs.
+
+
+\subsection{Cloud vs.~On-Premise Deployment}\label{cloud-vs.-on-premise-deployment}
+
+Utilities face a choice between cloud and on-premise platforms. Cloud advantages include scalability (easy addition of compute and storage), managed services (reducing infrastructure management), cost efficiency (pay-for-what-you-use models), and innovation (access to latest ML tools).
+
+On-premise advantages include data sovereignty (sensitive data stays on-site), regulatory compliance (some regulations require on-premise deployment), latency benefits (lower latency in real-time applications), and cost predictability (fixed costs versus variable cloud costs).
+
+Many utilities use a hybrid approach: cloud for training and development, on-premise for production serving with SCADA integration, cloud for non-critical use cases, and on-premise for critical infrastructure.
+
+
+\subsection{Cost Considerations}\label{cost-considerations}
+
+AI platform costs include infrastructure (compute with GPUs for training, storage, and networking), software licenses (ML platforms, databases, and orchestration tools), personnel (data scientists, ML engineers, and platform operators), maintenance (model retraining, monitoring, and updates), and integration (APIs, ETL, and system integration).
+
+Cost optimization strategies include starting small and scaling based on value. Using managed services reduces operational overhead. Right-sizing infrastructure avoids over-provisioning. Monitoring and optimizing continuously is essential.
+
+ROI calculation should justify platform costs through operational savings. Reduced O\&M and improved efficiency are examples. Deferred capital spending from extended asset life is another. Revenue opportunities from new services and market participation are included. Regulatory compliance avoids penalties.
+
+
+\subsection{Team Structure and Roles}\label{team-structure-and-roles}
+
+Successful AI platforms require data scientists. They build and improve models. ML engineers deploy models and manage infrastructure. Platform engineers maintain the platform and ensure reliability. Data engineers manage data pipelines and ensure quality. Product managers prioritize use cases and measure value. A governance team ensures compliance and manages risk.
+
+Organizational models include a centralized approach. A single AI team serves the entire utility. A federated approach embeds AI teams in business units. A hybrid approach uses a central platform team plus embedded data scientists.
+
+
+\subsection{Business Impact}\label{business-impact}
+
+A fully deployed AI platform supports real-time decision-making across the utility. Predictive maintenance scores continuously update from streaming SCADA data. Outage risk models run automatically as new weather alerts arrive. Load forecasts feed into operational systems without manual exports.
+
+This reduces latency between insight and action, increases the operational relevance of analytics, and establishes AI as a trusted part of utility workflows. Over time, it also reduces cost and complexity by replacing fragmented point solutions with a unified, scalable platform.
+
+
+\subsection{Deploying an Enterprise AI Platform}\label{deploying-an-enterprise-ai-platform}
+
+We deploy a predictive maintenance model as a production API endpoint. This represents the ``serving layer'' of an enterprise AI platform. The interface through which operational systems access model predictions.
+
+We train and save the model to prepare for deployment.
+
+\lstinputlisting[firstline=22,lastline=49]{../code/c16_pipeline.py}
+
+This trains a Random Forest classifier for transformer failure prediction. It saves it using joblib. In production, this would be part of an MLOps pipeline. MLflow is an example. This handles versioning and registration. I'm bullish on MLflow because it solves the ``which model version is in production?'' problem.
+
+We define the API input schema to ensure data validation.
+
+\lstinputlisting[firstline=50,lastline=62]{../code/c16_pipeline.py}
+
+This uses Pydantic to define the expected input format, ensuring data validation and clear API documentation. This is important—bad inputs break models, and clear documentation helps integration.
+
+We create the API endpoints to enable real-time integration.
+
+\lstinputlisting[firstline=63,lastline=75]{../code/c16_pipeline.py}
+
+This shows how FastAPI creates REST endpoints. They accept transformer sensor data and return failure risk predictions. The \texttt{/health} endpoint enables monitoring and Kubernetes liveness probes. This simple interface enables integration with control room dashboards, SCADA systems, mobile apps, and work order systems. Utilities use APIs like this to connect models to operations. This cuts integration time from weeks to days.
+
+The complete, runnable script is at \texttt{content/c20/pipeline.py}. The API can be run with \texttt{uvicorn\ pipeline:app\ -\/-host\ 0.0.0.0\ -\/-port\ 8000}.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Platform deployment enables scaling. Moving from pilots to platforms requires infrastructure, processes, and team structure. The investment pays off through scalable, reliable AI operations. APIs are the integration layer. REST APIs enable models to integrate with operational systems without complex infrastructure. Standard interfaces make integration straightforward.
+
+Containerization enables portability. Docker containers allow models to run consistently across development, testing, and production environments. Governance is essential. Production platforms need monitoring, security, audit trails, and compliance features. These aren't optional in regulated industries. Utilities get in trouble with regulators when they can't explain how their models worked. Don't let that be you.
+
+Start small, scale thoughtfully. Begin with a few high-value models, prove the platform concept, then expand. Don't try to build everything at once. I'm bullish on starting simple. You can always add complexity later, but you can't add reliability.
+
+
+\subsection{What's Next}\label{whats-next}
+
+This chapter concludes the technical content of our journey through machine learning for power and utilities. We've covered everything from simple regression to enterprise AI platforms. The path forward is clear. Start with high-value use cases, build data infrastructure, deploy models systematically, integrate with operations, and scale responsibly.
+
+In the Epilogue, we'll step back and reflect on the broader transformation. From pilots to platforms, building the workforce of the future, and staying grounded in governance. The future utility will be data-driven, predictive, and adaptive. The tools and techniques in this book provide the foundation to get there.
+
+Here's my bottom line: don't wait for the perfect solution. Start with simple models that solve real problems, prove the value, then build from there. The technology will keep getting better, but the fundamentals don't change. Good data, clear business problems, and operator trust are examples.

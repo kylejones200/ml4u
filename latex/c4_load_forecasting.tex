@@ -1,0 +1,151 @@
+\chapter{Load Forecasting}\label{ch:load-forecasting}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand why accurate load forecasting is critical for grid operations and market participation. You'll learn ARIMA time series modeling that captures autoregressive patterns in demand, see how LSTM neural networks capture nonlinear relationships in load data, and evaluate forecast accuracy using appropriate metrics like RMSE and MAPE. You'll recognize the operational impact of forecast errors and see how ML reduces them.
+
+
+\subsection{The Business Problem: Balancing Supply and Demand in Real Time}\label{the-business-problem-balancing-supply-and-demand-in-real-time}
+
+A utility overestimated demand by 5\%, committed extra generation, and it cost them \$50,000 in one day. This is why accurate forecasting matters.
+
+Electric power systems are unique among industries: supply and demand must remain balanced continuously because electricity is consumed the instant it is produced, and large-scale storage remains limited. This makes accurate demand forecasting central to every decision a utility makes.
+
+If forecasts overestimate demand, utilities commit more generation than needed, incurring unnecessary costs and running plants inefficiently. If forecasts underestimate demand, the grid faces shortages that risk frequency drops, emergency dispatch of expensive peaking units, and load shedding. This balancing act is complicated by rising demand volatility: distributed solar generation shifts net load profiles, electric vehicles create new evening peaks, and extreme weather events drive sudden spikes in heating and cooling loads.
+
+A utility I worked with had a forecast error. It cost them \$50,000 in a single day. They had to dispatch expensive peaking units when they didn't need to. That's real money. It happens more often than you'd think.
+
+Historically, utilities relied on deterministic or statistical models built on historical patterns that assumed tomorrow would look much like yesterday, adjusting for seasonal effects and known events. That assumption no longer holds. We're in an era of climate-driven weather extremes, rapid electrification, and high DER penetration. The cost of forecast errors is increasing—not just financially, but in terms of reliability and customer trust.
+
+
+\subsection{The Analytics Solution: Data-Driven Load Forecasting}\label{the-analytics-solution-data-driven-load-forecasting}
+
+Modern load forecasting applies machine learning to capture complex relationships between weather, calendar effects, and consumption behavior. Temperature remains the single largest driver of demand in most regions, though other factors play significant roles—humidity, wind, cloud cover, time of day, day of week, and holidays. For grids with significant rooftop solar, net load must account for both consumption and behind-the-meter generation.
+
+Short-term forecasts help operators adjust dispatch and manage ramping constraints minutes to hours ahead. Day-ahead forecasts guide market bids and generator commitments. Long-term forecasts inform capital planning, feeder upgrades, and rate design. Each horizon demands different models and data granularity, but they share a common goal: reduce uncertainty and enable better operational and financial decisions.
+
+Machine learning enhances forecasting by learning nonlinear interactions—demand rises sharply once temperatures cross certain thresholds, reflecting air conditioning saturation effects. Neural networks can capture such nonlinearities better than traditional linear regression. Time series models like ARIMA or SARIMA remain valuable for capturing autoregressive patterns, while ensemble methods blend multiple models to improve accuracy.
+
+
+\subsection{Understanding ARIMA Models}\label{understanding-arima-models}
+
+ARIMA captures temporal patterns in time series. ARIMA stands for AutoRegressive Integrated Moving Average: the AutoRegressive component means current values depend on previous values, the Integrated component uses differencing to make the series stationary, and the Moving Average component means current values depend on previous forecast errors.
+
+ARIMA models are specified as ARIMA(p, d, q), where p is autoregressive terms, d is differencing, and q is moving average terms. For load forecasting, ARIMA models excel at capturing daily and weekly patterns. The code uses ARIMA(3, 1, 2).
+
+
+\subsection{Linking Forecasting to Utility Operations}\label{linking-forecasting-to-utility-operations}
+
+Accurate forecasts drive every part of utility operations. For system operators, improved short-term forecasts reduce reliance on expensive reserves and minimize frequency excursions. For distribution planners, neighborhood-level forecasts flag feeders at risk of overload, a risk that electric vehicle adoption accelerates. For energy traders, better day-ahead forecasts sharpen market positions and reduce exposure to price volatility.
+
+Even customer-facing programs rely on forecasting. Demand response events require accurate predictions of when peak conditions will occur, maximizing participation and avoiding unnecessary interruptions. Time-of-use rates depend on understanding how customers shift load in response to pricing signals.
+
+Load forecasting is intertwined with renewable integration. As rooftop solar expands, midday net load dips and steep evening ramps strain peaking plants. Forecasting both gross load and distributed generation is critical for managing this two-sided variability. Utilities that fail to adapt risk operational stress and financial penalties in competitive markets.
+
+Xcel Energy's load forecasting team had the same problem that many utilities face. They could run their forecasts maybe once a year, and the whole process was a mess—spreadsheets, disparate systems, desktop tools, and third-party vendors were involved, with data flowing in and out manually. Their demand forecasting feeds into long-range resource plans they have to submit to regulators, so accuracy and detail matter.
+
+They migrated to a modern data platform and got access to granular smart meter data from about 4 million meters. Suddenly they could work with feeder-level data instead of being limited to aggregated numbers. The combination of that granularity plus compute power has been transformative. Cindy Hoffman, their Director of Enterprise Data Strategy \& AI, told me they started it as a proof of concept just to see if it would work—and it's proving out. They're building distribution forecasts that feed into load forecasting, which feeds into demand forecasting, which feeds into resource plans. The predictive models they're putting in place now work at a level of detail that wasn't feasible before. Some of their service territories are seeing massive data center expansion and rapid load growth, making this capability critical for their regulatory filings.
+
+
+\subsection{Forecast Accuracy Metrics}\label{forecast-accuracy-metrics}
+
+Before building models, understand how we measure forecast quality. RMSE measures average prediction error magnitude, MAPE shows error as a percentage of actual values (useful for comparing forecasts across different load levels), and MAE is less sensitive to outliers than RMSE. Forecast uncertainty is captured through confidence intervals, with wider intervals indicating higher uncertainty.
+
+
+\subsection{Building Load Forecasting Models}\label{building-load-forecasting-models}
+
+We walk through two complementary approaches to load forecasting: ARIMA captures temporal patterns, while LSTM neural networks learn complex nonlinear relationships. Both methods are essential tools in modern utility forecasting.
+
+We generate synthetic load data to simulate real utility patterns.
+
+\lstinputlisting[firstline=28,lastline=47]{../code/c4_load_forecasting.py}
+
+This creates one year of hourly load data with seasonal patterns, daily cycles, and realistic noise. The data simulates what utilities collect from their systems: clear daily cycles (higher during day, lower at night) and seasonal patterns (summer peaks for cooling, winter peaks for heating). In practice, you'd pull this from your SCADA or AMI systems.
+
+\lstinputlisting[firstline=48,lastline=55]{../code/c4_load_forecasting.py}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{../images/c4_chapter4_load.png}
+\caption{Hourly load data.}
+\label{fig:c4_load}
+\end{figure}
+
+We apply ARIMA forecasting to capture temporal patterns in the load data.
+
+\lstinputlisting[firstline=58,lastline=77]{../code/c4_load_forecasting.py}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{../images/c4_chapter4_arima.png}
+\caption{ARIMA forecast.}
+\label{fig:c4_arima}
+\end{figure}
+
+We demonstrate LSTM forecasting to capture nonlinear relationships that ARIMA might miss.
+
+\lstinputlisting[firstline=82,lastline=117]{../code/c4_load_forecasting.py}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{../images/c4_chapter4_lstm.png}
+\caption{LSTM forecast.}
+\label{fig:c4_lstm}
+\end{figure}
+
+The complete, runnable script is at \texttt{content/c4/load\_forecasting.py}. Try both approaches and see which works better for your use case.
+
+
+\subsection{Production-Grade Forecasting: Feature Engineering and Multi-Tier Models}\label{production-grade-forecasting-feature-engineering-and-multi-tier-models}
+
+The ARIMA and LSTM models we've covered provide solid foundations, but production forecasting systems require more sophistication. Real-world systems use advanced feature engineering, multiple model tiers, and scenario planning to handle the complexity of grid operations.
+
+Modern load forecasting leverages publicly available data in ways that were unimaginable a decade ago. The EIA's Form 930 provides hourly balancing authority data, NOAA delivers weather forecasts with unprecedented accuracy, and the EAGLE-I system tracks outages in near real-time. Together, these sources enable forecasting systems that outperform traditional approaches by 30-50\% using only publicly available data.
+
+The key to production-grade forecasting is feature engineering. Raw load values contain patterns, but extracted features make those patterns explicit for machine learning algorithms. Lag features capture temporal dependencies—load one hour ago, yesterday at the same hour, and last week at the same hour all influence current demand. Rolling statistics smooth noise while preserving trends. Cyclical encodings handle wraparound effects (hour 23 is close to hour 0, December 31 is close to January 1).
+
+Multi-tier modeling ensures robustness. ARIMA serves as a baseline that handles all regions with minimal data requirements, while LightGBM delivers superior accuracy when sufficient training data exists, typically achieving 30-40\% lower MAPE than ARIMA on regions with rich historical data. The system automatically selects the appropriate model tier based on data availability and accuracy requirements.
+
+We build a production-grade forecasting system with feature engineering and multi-tier modeling.
+
+\lstinputlisting[firstline=20,lastline=80]{../code/c4_advanced_forecasting.py}
+
+This shows how the feature engineering pipeline creates 20+ features starting with just timestamp and load columns. The lag features capture temporal dependencies where past load values influence future demand, the cyclical encodings handle wraparound effects, and the rolling statistics smooth noise while preserving trends. Temperature features model weather impacts, working even when real weather data isn't available.
+
+We train both ARIMA and LightGBM models using time series cross-validation.
+
+\lstinputlisting[firstline=82,lastline=150]{../code/c4_advanced_forecasting.py}
+
+This shows how the ARIMA model automatically detects seasonality, trends, and autocorrelation, requiring minimal feature engineering and training quickly even on years of hourly data. LightGBM handles complex non-linear relationships and feature interactions that ARIMA cannot capture. The time series cross-validation respects temporal order, preventing data leakage that would inflate performance metrics.
+
+Feature importance analysis reveals which factors drive load most strongly—typically lag features and temperature dominate, though relative importance varies by region and season. Understanding feature importance helps operators interpret forecasts and identify when models may need retraining.
+
+Scenario planning enables grid operators to prepare for extremes. The system can model heat waves, demand response programs, load growth, and major outages. Each scenario adjusts input features to explore alternative futures.
+
+\lstinputlisting[firstline=220,lastline=260]{../code/c4_advanced_forecasting.py}
+
+This shows how scenario planning helps operators understand tail risks by quantifying weather extremes, demand response effectiveness, and outage impacts before they occur. This capability proved critical during Winter Storm Uri, when load forecasts failed to capture the compound effects of extreme weather that affected both demand and supply.
+
+The complete, runnable script is at \texttt{content/c4/advanced\_forecasting.py}. This demonstrates production-grade forecasting. It includes feature engineering, multi-tier modeling, and scenario planning. In practice, utilities integrate these forecasts with EIA data, NOAA weather, and EAGLE-I outage tracking. This creates comprehensive grid intelligence platforms.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Forecast accuracy directly impacts operations. Even small improvements in forecast error translate to significant cost savings—a 1-2\% MAPE reduction, for example, happens through better generation scheduling and reduced reserve requirements. I've seen utilities save hundreds of thousands of dollars annually from just a 1\% improvement in forecast accuracy. Multiple models serve different purposes: ARIMA excels at capturing temporal patterns and is interpretable, while LSTMs capture complex nonlinearities but require more data and computational resources.
+
+Feature engineering is the secret sauce—rich features matter more than algorithm choice. Lag values, rolling statistics, and cyclical encodings are examples. Even simple models perform well with great features. The feature engineering pipeline transforms raw load values into 20+ features that capture temporal dependencies, trends, and seasonal patterns. I've seen feature engineering improve forecast accuracy by 20-30\% compared to using raw values alone.
+
+Multi-tier modeling ensures robustness. ARIMA serves as a baseline. It works everywhere with minimal data. LightGBM delivers superior accuracy when data allows. It typically achieves 30-40\% lower MAPE than ARIMA. The system automatically selects the appropriate tier. It bases this on data availability. This approach proved critical during Winter Storm Uri. Forecasts needed to work across regions with varying data quality.
+
+Scenario planning prepares for extremes. Grid reliability depends on understanding tail risks. Weather extremes can be quantified before they occur. Demand response effectiveness can be quantified. Outage impacts can be quantified. Operators can explore ``what-if'' scenarios. They stress-test operations. They prepare for rare but critical events. This capability is essential for grid resilience.
+
+Time series structure matters. Load data has strong daily and weekly patterns, and models that ignore these patterns will underperform (simple regression is an example). Forecast horizons require different approaches: short-term forecasts measured in hours can use recent patterns, day-ahead forecasts need weather inputs, and long-term forecasts require trend and growth modeling.
+
+Uncertainty quantification is critical—point forecasts alone aren't enough. Operators need confidence intervals to plan reserves and manage risk. I learned this from my ExxonMobil project: the forecast was right, but I didn't communicate the uncertainty well enough.
+
+Public data enables production-grade forecasting. The EIA's Form 930, NOAA weather, and EAGLE-I outages provide everything needed for utility-grade forecasting using publicly available data. The data moat has evaporated—anyone can build sophisticated forecasting systems without proprietary utility data.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 5, we'll shift from forecasting to predictive maintenance, using ML to anticipate equipment failures before they cause outages. You'll learn how classification and anomaly detection help utilities prioritize maintenance resources. The principles are similar, but the use case is different.

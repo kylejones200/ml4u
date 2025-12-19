@@ -1,0 +1,110 @@
+\chapter{MLOps}\label{ch:mlops}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand the gap between ML experimentation and production deployment. You'll learn to use MLflow for experiment tracking and model versioning. You'll see how to deploy models as APIs for real-time integration with operational systems. You'll recognize the importance of model monitoring and automated retraining. You'll build complete MLOps workflows that meet regulatory requirements for auditability.
+
+
+\subsection{The Business Problem: Scaling Machine Learning Beyond Pilots}\label{the-business-problem-scaling-machine-learning-beyond-pilots}
+
+A utility built a great predictive maintenance model that works in the lab but never makes it to production. This is the pilot purgatory problem.
+
+Utilities increasingly run pilot projects to apply machine learning to forecasting, maintenance, or outage prediction. While these pilots often show promise, few make it into production. Models remain in notebooks or are run manually by analysts. There is no automated way to retrain them, deploy them reliably, or monitor their performance over time.
+
+Great models that never make it to production. The technical work is done, but the operational work isn't. That's where MLOps comes in.
+
+This gap between experimentation and production limits impact. Without a clear path to operational deployment, even accurate models fail to inform real-time decision-making. Meanwhile, regulatory requirements for auditability and reliability add complexity. This complicates deploying analytics in critical infrastructure environments.
+
+Utilities need a structured approach to operationalize machine learning. They must ensure models are reproducible, monitored, and integrated with existing IT and OT systems. This is the ``pilot purgatory'' problem I mentioned earlier. Technically sound models never deliver value because they're not connected to operations.
+
+
+\subsection{The Analytics Solution: Machine Learning Operations (MLOps)}\label{the-analytics-solution-machine-learning-operations-mlops}
+
+MLOps brings the discipline of software operations to machine learning workflows. It provides frameworks and processes for model versioning, automated training pipelines, deployment, and monitoring.
+
+In practice, this means using tools like MLflow to track model experiments and register the best-performing versions in a centralized repository. Deployment frameworks then package models as APIs, allowing integration with control room dashboards, SCADA feeds, or enterprise systems. Continuous monitoring tracks model drift and retrains models automatically when performance declines.
+
+By formalizing these workflows, utilities move from ad hoc analytics to repeatable, scalable machine learning. MLOps also supports governance and compliance. It records exactly which data, code, and parameters produced each model. This ensures transparency and auditability.
+
+
+\subsection{Understanding MLflow}\label{understanding-mlflow}
+
+MLflow is an open-source platform for managing ML lifecycle. Key components include tracking (logging experiments, parameters, metrics, and artifacts like models and plots), models (providing a standardized format for packaging models with dependencies), the Model Registry (a centralized repository for model versions with stages like Staging, Production, and Archived), and projects (enabling reproducible ML code with environment specifications).
+
+The MLflow workflow involves training a model in an experiment and logging parameters and metrics. It registers the best model to the Model Registry. It promotes the model through stages from Staging to Production. It deploys the model as an API or loads it for batch scoring. It monitors performance and retrains when needed.
+
+The code demonstrates this workflow for a transformer failure prediction model.
+
+
+\subsection{Model Monitoring and Drift Detection}\label{model-monitoring-and-drift-detection}
+
+Deployed models can degrade over time due to data drift (input data distribution changes—new equipment types or different operating conditions, for example), concept drift (when the relationship between inputs and outputs changes, like failure patterns evolving), and performance degradation (when model accuracy declines on new data).
+
+Monitoring strategies include input monitoring (tracking feature distributions and detecting outliers), output monitoring (monitoring prediction distributions and flagging unusual patterns), and performance monitoring (comparing predictions to actuals when available and tracking metrics over time). Automated alerts trigger retraining when drift exceeds thresholds.
+
+For utilities, model drift is especially critical because grid conditions evolve. DER penetration, load growth, and aging assets are factors. Models trained on historical data may become less accurate over time.
+
+
+\subsection{A/B Testing for Model Deployment}\label{ab-testing-for-model-deployment}
+
+Before replacing a production model, utilities often run A/B tests. The A group, or control, uses the current model. The B group, or treatment, uses the new model candidate. Traffic is split, routing some predictions to each model. Performance is compared using metrics, operational outcomes, and user feedback. Gradual rollout increases B's traffic if it performs better.
+
+This reduces risk of deploying models that perform worse in production than in testing.
+
+
+\subsection{Operational Benefits}\label{operational-benefits}
+
+Implementing MLOps accelerates the time from proof-of-concept to production, allowing utilities to realize value faster. Predictive maintenance models can be deployed as APIs that score assets continuously from incoming SCADA or IoT data. Load forecasting models can feed directly into market scheduling systems. Outage prediction models can be run automatically when storm warnings are issued, producing real-time crew staging plans.
+
+MLOps also improves reliability. Automated retraining ensures models remain accurate as system conditions evolve (load growth or changes in DER penetration, for example). Alerting and monitoring help detect anomalies, preventing models from silently degrading. This approach aligns machine learning with the rigor expected of operational tools in critical infrastructure.
+
+Xcel Energy's journey with MLOps is a good example. Organizational change matters as much as technical capability. When they first acquired Databricks, the platform sat unused for a year. That's a common pattern in utilities. Technology gets purchased with good intentions but lacks execution strategy. The problem wasn't that Databricks wasn't capable. They didn't have a clear plan for how to use it. The data science team was already comfortable with their existing tools.
+
+The turning point came when they partnered with Nousot to modernize their approach. They established a unified data platform strategy and started building MLOps capabilities systematically. One of their first projects was an MLOps ``Kickstarter'' that helped their data science team modernize model development. The previous process was slow—data scientists would create models, but getting them into production required extensive manual work. They established MLOps templates with Git and CI/CD, letting data scientists spend more time on models versus managing automation.
+
+They didn't try to force everyone to change at once—they started with a small group, proved the value, then expanded. The templates they built weren't just technical—they included documentation standards, testing requirements, and deployment processes that made it easier for data scientists to do the right thing. They also had to solve the cultural problem: data scientists who were used to working in isolation had to learn to collaborate, use version control, and think about production from the start.
+
+The impact has been real. They've completed three models with six more in progress, and the MLOps processes have cut the time from model development to deployment, enabling faster iteration and more reliable production models. Tom Moore, their Technology Analytics and AI Leader, told me they went from ``a lot of different siloed solutions, a lot of old tech, a lot of really difficult ways to get to your insights'' to ``really great innovative use cases'' and ``excellent progress.'' He said they've done a complete 180—it's changing how they interact with the business.
+
+The key lesson here is that MLOps isn't just about tools—it's about changing how teams work. The technical infrastructure matters, but the organizational change is what makes it stick. They had to break down silos between data science, engineering, and operations, create processes that made collaboration easier (not harder), and prove value quickly. Utilities don't have patience for long transformation projects that don't show results.
+
+
+\subsection{Building MLOps Workflows}\label{building-mlops-workflows}
+
+We walk through a complete MLOps workflow using MLflow. We train a model, log it with full versioning, register it for production, and deploy it as an API. It also shows how to integrate with streaming data (Kafka) for real-time scoring. This is a common pattern in utility operations.
+
+We generate synthetic asset data and train a model to demonstrate the MLOps workflow.
+
+\lstinputlisting[firstline=28,lastline=78]{../code/c14_mlflow_demo.py}
+
+This creates transformer health data (temperature, vibration, oil quality, and age, for example) with failure labels, trains a Random Forest classifier, and logs everything to MLflow. The logging includes model artifacts, parameters, and metrics, creating an audit trail essential for regulatory compliance. I'm bullish on MLflow because it solves the ``which model version is in production?'' problem that causes confusion.
+
+We load the production model from the registry to demonstrate model versioning.
+
+\lstinputlisting[firstline=79,lastline=88]{../code/c14_mlflow_demo.py}
+
+This shows how the Model Registry manages model versions and stages. Production models are clearly identified. Rollback is straightforward if new versions underperform.
+
+We deploy the model as an API to enable real-time integration with operational systems.
+
+\lstinputlisting[firstline=89,lastline=106]{../code/c14_mlflow_demo.py}
+
+This shows how FastAPI creates a REST endpoint that accepts transformer data and returns failure risk predictions, enabling integration with dashboards, SCADA systems, and mobile apps. The API format (JSON) is standard and easy to integrate.
+
+The complete, runnable script with imports, configuration, Kafka streaming integration, and main execution is available at \texttt{content/c12/mlflow\_demo.py} in the repository.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+MLOps bridges experimentation and production. Without MLOps, models remain in notebooks and fail to deliver operational value. MLflow provides essential capabilities—experiment tracking, model registry, and deployment tools are the foundation of MLOps. Start here before building custom solutions.
+
+Model versioning is critical—production systems need clear model versions for rollback, debugging, and compliance, and model registries manage this systematically. APIs enable real-time integration—REST endpoints allow models to integrate with operational systems (dashboards, SCADA, and mobile apps) without complex infrastructure.
+
+Monitoring prevents silent degradation. Models drift over time, and automated monitoring and retraining keep models accurate as conditions evolve. Models that worked great for six months can start failing because the data distribution changed—without monitoring, you don't know until it's too late.
+
+Here's the bottom line: MLOps isn't optional. If you want models in production, you need versioning, monitoring, and deployment. Do it right from the start, or you'll pay for it later.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 15, we'll explore orchestration. We'll bring together multiple ML use cases into integrated pipelines. These show how predictive maintenance, outage prediction, and load forecasting work together. They create systemwide operational intelligence.

@@ -1,7 +1,0 @@
-paths:
-  shapefile: "data/gis/feeders.shp"
-
-kafka:
-  topic: "scada_stream"
-  bootstrap_servers: "localhost:9092"
-

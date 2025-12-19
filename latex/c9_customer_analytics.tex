@@ -1,0 +1,126 @@
+\chapter{Customer Analytics}\label{ch:customer-analytics}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand how customer segmentation improves demand response program effectiveness. You'll learn to use K-means clustering to group customers by load profiles, see how clustering reveals distinct consumption patterns from smart meter data, recognize how segmentation informs program design and targeting strategies, and apply clustering results to identify high-value customers for demand response.
+
+
+\subsection{The Business Problem: Engaging Customers to Manage Demand}\label{the-business-problem-engaging-customers-to-manage-demand}
+
+A utility built infrastructure to meet peak demand, but peaks occur only a few times each year, leading to expensive infrastructure that sits underutilized for most hours. This is the peak demand problem.
+
+Electric grids must be built to meet peak demand even though those peaks occur only a few times each year, leading to expensive infrastructure that sits underutilized for most hours. Demand response programs aim to address this by encouraging customers to shift or reduce consumption during critical periods, flattening peaks and easing stress on the grid.
+
+However, not all customers respond the same way. Some households have highly flexible loads they can shift easily, while others cannot reduce usage without disruption. Programs that treat all customers alike often achieve disappointing results because incentives and messaging fail to match customer behavior.
+
+Utilities spend millions on demand response programs that barely moved the needle. They treated everyone the same. The problem isn't the technology. It's the targeting.
+
+Utilities need ways to identify which customers are best suited for demand response and design tailored programs that maximize participation. Without this insight, they risk low enrollment, poor event compliance, and limited grid impact, undermining the value of demand-side resources.
+
+
+\subsection{The Analytics Solution: Using Data to Target and Segment Customers}\label{the-analytics-solution-using-data-to-target-and-segment-customers}
+
+Customer analytics uses data from advanced metering infrastructure, billing systems, and program participation records to understand consumption patterns and identify load flexibility. Smart meters provide granular consumption data that can reveal daily, weekly, and seasonal usage profiles for each household.
+
+Clustering techniques can segment customers into groups based on similar load shapes. Some customers may show high evening peaks tied to cooking and HVAC usage, while others have flatter profiles or midday spikes associated with daytime occupancy. These segments inform which customers are most likely to reduce load in response to incentives or pricing signals.
+
+Classification models can also predict participation likelihood, drawing on historical demand response enrollment and demographic data. This helps utilities prioritize outreach, target those most likely to engage, and avoid costly campaigns aimed at customers unlikely to respond.
+
+By combining behavioral segmentation with predictive modeling, utilities can refine demand response strategies, increasing event performance and avoiding overbuilding supply-side resources.
+
+
+\subsection{Understanding K-Means Clustering}\label{understanding-k-means-clustering}
+
+K-means is an unsupervised learning algorithm that groups similar observations into clusters. For customer segmentation, the input is daily load profiles with 24 hourly values for each customer. The process involves the algorithm finding K cluster centers, or centroids, that minimize within-cluster variance. The output assigns each customer to one of K clusters based on similarity.
+
+Choosing the number of clusters K involves several common methods. The elbow method plots within-cluster variance versus K and looks for an elbow where improvement plateaus. Domain knowledge allows choosing K based on business needs (3-5 segments for program design, for example). The silhouette score measures how well customers fit their clusters—higher scores are better.
+
+The code uses K=3, which typically reveals high-peak customers with evening spikes, flat-profile customers with consistent usage, and mid-peak customers with moderate variation.
+
+
+\subsection{Temporal Patterns in Customer Behavior}\label{temporal-patterns-in-customer-behavior}
+
+Customer load profiles change over time. Daily patterns show morning peaks from breakfast and getting ready, and evening peaks from cooking and heating or cooling. Weekly patterns reveal weekday versus weekend differences, while seasonal patterns show summer cooling versus winter heating.
+
+The code focuses on daily patterns, though production systems often analyze weekly or seasonal profiles. Advanced approaches use time series clustering (Dynamic Time Warping, for example) to handle temporal variations.
+
+Average day profiles extract representative consumption patterns by computing mean hourly consumption across all days in a dataset \cite{brudermueller2023smart}, creating a 24-hour profile that captures typical daily behavior while averaging out day-to-day variation. For segmentation, these profiles are often more stable than raw time series data because they focus on shape rather than absolute magnitude or specific daily fluctuations.
+
+Before clustering, it's often useful to remove outlier customers (those with unusually high or low consumption that don't fit typical patterns) because these outliers can distort cluster centroids and create segments that don't match operational needs. Local Outlier Factor (LOF) is one method for identifying such customers before segmentation.
+
+
+\subsection{Business Impact}\label{business-impact}
+
+Targeted demand response programs reduce peak load, defer costly infrastructure upgrades, lower wholesale energy procurement during high-price periods, and support integration of renewables by shifting load to times of abundant solar or wind generation.
+
+Southern Company, which serves 9 million customers across electric and gas utilities in Alabama, Georgia, and Mississippi, demonstrates this approach. Their customer analytics strategy focuses on three things: affordability, customer satisfaction, and the value they provide to customers. They've built a unified data platform that enables dynamic, near real-time insights rather than just retrospective reports.
+
+They have robust social media monitoring tools that track customer sentiment and issues. In one case, a frustrated customer posted on social media without identifying themselves or their location. The power delivery team used data analytics to identify the customer, find their location, and analyze their outage history, confirming they were indeed experiencing frequent outages—sometimes weather-related, sometimes vegetation management issues. The team took action and did work that improved that customer's reliability. That's how customer analytics transforms reactive service into proactive problem-solving.
+
+Their approach emphasizes meeting customers where they are (laptop, toughbook in the field, or phone). The platform enables customer 360 views that combine billing, usage, outage history, and program participation, providing a complete picture of each customer's relationship with the utility. Nick Whatley, their Director of Enterprise Data and Customer Analytics, told me they keep the customer at the center of everything. As they deploy insights internally, they make sure it's going to work day-to-day, leading to better satisfied customers and improved affordability, safety, and reliability.
+
+Customers benefit from lower bills through participation incentives or time-based rates. These reward off-peak consumption. Effective segmentation ensures these programs feel relevant and fair. It avoids customer dissatisfaction or program fatigue.
+
+In competitive markets, successful demand response strategies can also provide revenue streams. They aggregate flexible load into virtual power plants. These bid into wholesale markets. Analytics makes this aggregation more precise and dependable.
+
+
+\subsection{Building Customer Segmentation Models}\label{building-customer-segmentation-models}
+
+We segment customers using K-means clustering on smart meter data. The approach transforms raw consumption data into actionable customer insights that inform demand response program design and targeting. Utilities double their demand response participation rates by using segmentation like this.
+
+We generate synthetic smart meter data to simulate real customer consumption patterns.
+
+\lstinputlisting[firstline=19,lastline=32]{../code/c9_demand_response.py}
+
+This creates hourly consumption data for multiple customers over several days. Each customer has a unique load profile with daily patterns (morning and evening peaks, for example) and includes random variation. This simulates real AMI data utilities collect—in practice, you'd pull this from your AMI system, but the patterns are the same.
+
+We cluster customers by their daily load profiles to identify distinct segments.
+
+\lstinputlisting[firstline=33,lastline=63]{../code/c9_demand_response.py}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{../images/c9_chapter9_dr_clusters.png}
+\caption{Customer load profile clusters.}
+\label{fig:c9_clusters}
+\end{figure}
+
+We identify demand response targets from the highest-load cluster.
+
+\lstinputlisting[firstline=59,lastline=65]{../code/c9_demand_response.py}
+
+The complete, runnable script is at \texttt{content/c9/demand\_response.py}. Run it and see what segments emerge from your data.
+
+
+\subsection{Advanced Segmentation with Average Day Profiles}\label{advanced-segmentation-with-average-day-profiles}
+
+A more robust approach to customer segmentation first extracts average day profiles (representative 24-hour consumption patterns) before clustering. This method focuses on typical behavior rather than day-to-day variations, leading to more stable segments that better reflect customer archetypes.
+
+\lstinputlisting[firstline=59,lastline=128]{../code/c9_demand_response.py}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{../images/c9_chapter9_dr_clusters.png}
+\caption{Customer segmentation clusters showing distinct demand response profiles.}
+\label{fig:c9_clusters}
+\end{figure}
+
+This shows how the approach first calculates average day profiles for each customer by taking the mean consumption for each hour across all days. These profiles capture typical daily patterns and smooth out random variation. The segmentation then uses Local Outlier Factor to remove customers with anomalous consumption before clustering, preventing outliers from distorting cluster centers.
+
+The key advantage is that clustering operates on normalized profile shapes rather than raw time series. This means a customer with consistently high evening consumption will cluster with similar customers regardless of their absolute consumption level—exactly what we want for demand response targeting.
+
+In practice, utilities use these segments to design targeted programs. High-peak customers might receive incentives for EV charging during off-peak hours. Flat-profile customers might be better candidates for direct load control programs.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Segmentation improves program effectiveness. Treating all customers the same leads to low participation, but clustering reveals distinct segments that need different approaches. K-means is simple but effective—for daily load profiles, K-means often captures meaningful segments. More complex methods like hierarchical clustering or time series clustering may be needed for weekly or seasonal patterns.
+
+Standardization matters. Clustering on raw consumption values groups by total usage, but standardizing focuses on shape—when peaks occur is what matters, which is more relevant for demand response targeting. Visualization is essential—plots reveal whether clusters capture meaningful patterns or are just statistical artifacts. Always visualize cluster results before using them operationally. Utilities use clusters that don't make operational sense when they don't visualize them first.
+
+Segmentation enables personalization. Different customer segments need different programs, messaging, and incentives, and analytics makes this personalization scalable. The key is matching the program to the segment—high-peak customers might respond to different incentives than flat-profile customers.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 10, we'll explore computer vision, using object detection models to automate infrastructure inspections from drone imagery. This reduces field costs while improving coverage and safety. It's a different use case, but the principles are the same.

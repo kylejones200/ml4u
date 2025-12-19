@@ -1,0 +1,102 @@
+\chapter{Outage Prediction}\label{ch:outage-prediction}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand how outage prediction enables proactive crew staging and resource allocation. You'll learn to build classification models that predict outage risk from weather and asset data, see how feature importance analysis reveals which factors drive outages, and recognize the challenge of rare events (outages are infrequent) and how to handle them. Finally, you'll apply geospatial thinking to outage risk mapping and crew deployment.
+
+
+\subsection{The Business Problem: Reducing the Impact of Outages}\label{the-business-problem-reducing-the-impact-of-outages}
+
+A storm hit, high winds brought down lines, and fifteen thousand customers lost power. This is the cost of reactive outage response.
+
+Outages are among the most visible and costly challenges for utilities. Severe weather, vegetation contact, equipment failures, and accidents can disrupt service, triggering widespread customer complaints, regulatory scrutiny, and financial penalties. For every minute the lights are out, reliability metrics worsen (SAIDI and SAIFI), directly influencing performance-based incentives and public perception.
+
+Weather-related outages are especially disruptive. High winds bring down lines, ice accumulates on conductors, and storms knock trees into feeders. Vegetation is a leading cause of faults in distribution networks, particularly in storm-prone regions. When outages occur during major weather events, restoration becomes more difficult as crews face hazardous conditions and blocked access routes.
+
+Utilities spend millions on storm response, only to realize later that they could have prevented many outages by trimming vegetation in the right places. The problem isn't lack of data—it's lack of predictive targeting.
+
+Traditionally, utilities have been reactive: storms strike, outages happen, crews are dispatched. While vegetation management and equipment hardening programs help, they often follow fixed cycles or broad risk maps rather than precise, predictive targeting. This reactive posture leaves utilities vulnerable to operational strain and customer frustration.
+
+
+\subsection{The Analytics Solution: Predicting Outages Before They Happen}\label{the-analytics-solution-predicting-outages-before-they-happen}
+
+Outage prediction uses data-driven analytics to estimate the likelihood of faults and disruptions before they occur. By combining weather forecasts, vegetation density maps, equipment condition data, and historical outage records, machine learning models can learn patterns that precede failures.
+
+Classification models, for example, can estimate outage risk for each feeder or substation during an approaching storm based on inputs such as forecast wind speed, rainfall, feeder vegetation exposure, and past performance under similar conditions. These predictions enable utilities to pre-stage crews where they are most likely to be needed, shortening restoration times and optimizing resource allocation.
+
+Reliability analytics extends this approach over longer horizons. By analyzing multi-year outage histories alongside asset and environmental factors, utilities can identify systemic weaknesses—aging circuits that fail repeatedly in storms, areas with insufficient vegetation clearance. This informs capital planning, targeted hardening, and focused vegetation management programs that prevent outages rather than just reacting to them.
+
+
+\subsection{Handling Rare Events: Outages Are Infrequent}\label{handling-rare-events-outages-are-infrequent}
+
+A dataset of 1500 weather events might have only a fraction that result in outages—this is the rare event problem.
+
+Like equipment failures, outages are rare events—in a dataset of 1500 weather events, only a fraction result in outages. This creates class imbalance challenges similar to predictive maintenance. Techniques to address this include stratified sampling, feature engineering that creates derived features (wind speed multiplied by tree density, for example), cost-sensitive learning that weights outage cases more heavily, and ensemble methods that combine multiple models.
+
+The code uses stratified train/test splits and Gradient Boosting. This handles imbalanced data better than some other algorithms.
+
+
+\subsection{Feature Engineering for Weather Data}\label{feature-engineering-for-weather-data}
+
+Raw weather variables often need transformation to capture outage risk. Threshold effects occur when wind speeds above 25 m/s cause exponentially more damage, so we create binary features for wind above threshold and polynomial terms. Interaction terms like wind multiplied by tree density capture the combined risk better than either variable alone. Temporal features such as cumulative rainfall over preceding days may matter more than instantaneous values, and geographic aggregation that averages weather across a feeder's service area may be more predictive than point measurements.
+
+The code uses basic features. Production systems often include dozens of engineered features. These are derived from weather forecasts, historical patterns, and asset characteristics.
+
+
+\subsection{Operational and Financial Benefits}\label{operational-and-financial-benefits}
+
+The benefits of predictive outage analytics are twofold: operational efficiency and improved reliability performance. Crew staging informed by risk models can dramatically cut restoration times by positioning resources ahead of an event, reducing overtime costs, accelerating service restoration, and improving customer satisfaction and regulatory scores.
+
+Over the long term, data-driven reliability analytics supports smarter investments. Rather than blanket upgrades or broad vegetation trimming cycles, utilities can direct funds toward feeders and equipment with the highest risk and impact. This targeted approach maximizes return on investment and aligns reliability improvements with measurable outcomes.
+
+These techniques are particularly valuable as climate change drives more extreme weather. Utilities face growing storm frequency and intensity, making proactive outage mitigation an essential part of resilience planning. Predictive models transform storm response from reactive dispatch to preemptive action, increasing grid resilience in a cost-effective manner.
+
+Alabama Power, an operating company of Southern Company, built two applications that show what's possible: SPEAR (Storm Planning, ETR and Reporting) and RAMP (Reliability Analytics Metrics and Performance). The journey wasn't straightforward—they started with spreadsheets and manual processes, which is where most utilities still are. The challenge wasn't just building models; it was integrating data from systems that weren't designed to work together.
+
+SPEAR uses weather data and internal systems to predict storm impact on the grid, giving their storm center detailed forecasts including incidents, resources needed, and estimated restoration times. The business impact is real: SPEAR can predict storm impact within a 10\% margin of error. For a 10-day storm with 500 customer outages, improving from 20\% to 10\% margin of error saves about \$2.8M per storm event—that's the kind of ROI that gets attention.
+
+They had to solve the data integration problem first. They're pulling from their Outage Management System for real-time grid status, from multiple weather vendors for predictions, from AMI for smart meter data from 1.5 million customer premises, and from grid telemetry from sensors across the distribution network. All these streams land in Azure Blob Storage and get processed through Databricks using Delta Lake. The platform uses Delta Live Tables pipelines that automatically handle incremental processing, data quality checks, and dependency management—this matters when you're dealing with data that arrives at different frequencies and formats.
+
+They use GraphFrames to analyze grid topology and GeoSpark for geospatial processing of assets, enabling them to understand not just where outages might happen, but how they might cascade through the network. The outputs are visualized in RAMP and SPEAR, which are containerized applications built by E Source. Unity Catalog centralizes metadata management across multiple workspaces, providing consistent access controls and security policies. This integrated architecture lets them process large amounts of data quickly, efficiently, and securely while sharing applications across the organization.
+
+RAMP does something different but equally valuable: it enables real-time monitoring of assets across their entire system, including 1.5 million customers, 2,400 substations, and 250,000 devices. They shifted from monthly reporting to near real-time, and the efficiency gains are dramatic—customer outage history retrieval went from four hours to four seconds, a 3600X improvement. With 70,000 annual outages, even a 5\% reduction could save \$17.5M in crew costs alone.
+
+The technical challenge wasn't just building the models—it was making the data accessible. Before this, their data science team would spend days just getting the right data together for analysis. Now, with a unified platform, data scientists and engineers can work seamlessly on complex projects that combine GIS, SCADA, AMI, weather, and asset data. Shane Powell, their Data Analytics and Innovation Manager, told me that having a unified platform for collaboration and real-time analytics has been essential for their team. He also mentioned the organizational challenge: getting different teams to trust a shared platform took time. That's the part that doesn't show up in the ROI calculations, but it's just as important.
+
+
+\subsection{Building Outage Prediction Models}\label{building-outage-prediction-models}
+
+We build an outage prediction model using weather and asset data. The model learns which combinations of conditions predict outages (wind speed, rainfall, vegetation density, and asset age, for example), enabling proactive crew staging and resource allocation. Utilities cut restoration times by 30\% using models like this.
+
+We generate synthetic outage data to simulate real weather and asset conditions.
+
+\lstinputlisting[firstline=21,lastline=44]{../code/c6_outage_prediction.py}
+
+This creates realistic weather events (wind speed and rainfall), asset characteristics (tree density and age), and correlated outage outcomes. This simulates data utilities collect from weather services, GIS systems, and asset registries. In practice, you'd pull this from multiple systems and join them—this is harder than it sounds, as we discussed in Chapter 2.
+
+We train a Gradient Boosting classifier to predict outage risk.
+
+\lstinputlisting[firstline=45,lastline=89]{../code/c6_outage_prediction.py}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{../images/c6_chapter6_feature_importance.png}
+\caption{Feature importance.}
+\label{fig:c6_feature_importance}
+\end{figure}
+
+The complete, runnable script is at \texttt{content/c6/outage\_prediction.py}. Run it and see which features matter most for your scenario.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Outage prediction enables proactive response. By predicting outages before storms hit, utilities can stage crews and equipment, dramatically reducing restoration times and customer impact. I've seen utilities cut restoration times by 30\% using predictive models. Weather and asset data combine for better predictions—models that use both weather forecasts and asset characteristics outperform those using either alone (vegetation and age, for example).
+
+Feature importance guides operations—understanding which factors drive outages helps utilities prioritize investments and maintenance activities (wind and vegetation, for example). Rare events require special handling. Like failures, outages are infrequent, so use stratified sampling, appropriate metrics, and ensemble methods to handle class imbalance. I've seen models that are 95\% accurate but useless because they just predict ``no outage'' for everything.
+
+Geospatial context matters—outage risk varies by location. Integrating GIS data enables targeted, feeder-level predictions that guide crew deployment. This is where the rubber meets the road: predictions are only useful if they tell you where to send crews.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 7, we'll explore grid operations optimization using reinforcement learning—a more advanced technique for real-time control decisions that maintain voltage and frequency within acceptable limits. It's more complex, but the principles are the same.
