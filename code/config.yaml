@@ -146,6 +146,7 @@ paths:
   shapefile: ""
   dataset_yaml: ""
   sample_image: ""
+  model_file: "model.pkl"
 
 kafka:
   topic: "scada_telemetry"
