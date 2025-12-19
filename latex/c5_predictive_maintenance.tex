@@ -1,0 +1,142 @@
+\chapter{Predictive Maintenance}\label{ch:predictive-maintenance}
+
+\subsection{What You'll Learn}\label{what-youll-learn}
+
+By the end of this chapter, you will understand the business case for shifting from reactive to predictive maintenance. You'll learn to use classification models that predict equipment failure risk from sensor data, apply anomaly detection to identify equipment deviating from normal behavior, and recognize the challenge of class imbalance (failures are rare) and how to address it. Finally, you'll build risk scoring systems that prioritize maintenance resources effectively.
+
+
+\subsection{The Business Problem: The Cost of Unplanned Failures}\label{the-business-problem-the-cost-of-unplanned-failures}
+
+A transformer failed unexpectedly, causing a feeder trip that left fifteen thousand customers without power. This is the cost of unplanned failures.
+
+Utility infrastructure is aging—many transformers, breakers, and other critical components have been in service for decades, operating far beyond their original design lifespans. Routine maintenance schedules and periodic inspections have historically been the backbone of asset management, with crews replacing components on fixed timelines or after visible deterioration. Major failures are often addressed reactively when they occur.
+
+This approach is costly and inefficient. Unplanned failures disrupt service, trigger expensive emergency repairs, and can cascade into larger outages affecting thousands of customers. Each transformer failure or feeder trip carries repair costs, penalties for reliability metrics (SAIDI and SAIFI), and reputational damage. Worse, utilities often replace equipment too early, discarding assets that still have years of useful life simply because their age meets replacement criteria.
+
+I learned this lesson working on drilling automation at ExxonMobil. We were trying to figure out how to automate more of the process. We were adding pipe sections as you drill deeper. The first step was measuring each step of the process. We broke down all the different parts that have to happen to add a piece of pipe and spin them together. They have threading on them, just like a peanut butter jar. We found we could cut about 5 seconds from every time they had to do this process. I thought, ``5 seconds? What does that matter?'' But they do it so many times that it ended up saving ExxonMobil millions of dollars per well. Improving quality just a little bit, when you do it so often, had a huge outcome value.
+
+The challenge lies in predicting failures before they happen and targeting maintenance only where it is needed. Doing so requires leveraging data from sensors, inspection logs, and operational histories to assess asset health dynamically rather than relying on static schedules. This is where predictive maintenance comes in.
+
+
+\subsection{The Analytics Solution: From Reactive to Predictive Maintenance}\label{the-analytics-solution-from-reactive-to-predictive-maintenance}
+
+Predictive maintenance uses data-driven analytics to estimate an asset's remaining useful life and detect signs of impending failure. Rather than replacing equipment based purely on age or fixed intervals, utilities can prioritize interventions based on condition, minimizing both premature replacements and catastrophic failures.
+
+SCADA systems already collect equipment-level telemetry (transformer loading, oil temperature, and breaker operations), while modern deployments add IoT sensors that measure vibration, dissolved gas analysis (DGA), or partial discharge activity. Each provides a window into asset health, and combined with asset registries tracking manufacturer, installation date, and maintenance history, these data sources feed machine learning models that predict failure risk.
+
+One common approach is classification modeling, where assets are labeled as failed or healthy based on historical outcomes and the model learns to distinguish between them. Another is anomaly detection, which flags equipment whose sensor readings deviate from normal operating patterns. Time series models can also be used to identify slow degradation trends and predict remaining useful life.
+
+These techniques transform maintenance from a calendar-driven process into a data-driven one. They align scarce field resources with the equipment most in need of attention.
+
+
+\subsection{Handling Class Imbalance in Failure Prediction}\label{handling-class-imbalance-in-failure-prediction}
+
+A dataset of 2000 transformer readings might have only 50 failures, representing just 2.5\% of the data. This is the class imbalance problem.
+
+A critical challenge in predictive maintenance is class imbalance. Failures are rare events—in a dataset of 2000 transformer readings, you might have only 50 failures, representing just 2.5\% of the data. This imbalance causes problems: models tend to predict healthy for everything to achieve high accuracy. A model that's 97\% accurate sounds great until you realize it's just predicting ``healthy'' for everything.
+
+Precision and recall become more important than overall accuracy. Techniques like stratified sampling, class weighting, or SMOTE help balance the dataset. The code uses stratified train/test splits to ensure both classes are represented. In production, utilities often use ensemble methods and adjust decision thresholds based on operational priorities—preferring false alarms over missed failures, for example.
+
+Utilities usually prefer false alarms over missed failures. A false alarm means you send a crew to check something that's fine. A missed failure means an outage. The cost trade-off is usually clear.
+
+
+\subsection{Labeling Historical Failures}\label{labeling-historical-failures}
+
+To train classification models, you need labeled data—which assets failed and when. Common approaches include work order systems that link maintenance records to asset IDs and failure dates, SCADA alarms that use equipment trip events as failure indicators, inspection reports that flag assets marked for replacement due to condition, and expert labeling where engineers review sensor trends and label pre-failure periods.
+
+The synthetic data in this chapter simulates this process. In practice, labeling requires domain expertise. It distinguishes true failures from maintenance events or false alarms.
+
+
+\subsection{Real-World Impact}\label{real-world-impact}
+
+The business value of predictive maintenance is tangible. Reducing unplanned outages improves reliability metrics, customer satisfaction, and lowers regulatory penalties. Targeted interventions reduce maintenance costs by avoiding unnecessary replacements and emergency overtime. Predicting transformer failures before they occur prevents feeder trips and associated cascading effects.
+
+Moreover, predictive maintenance supports capital planning. Utilities can use risk scores to defer non-critical replacements, extending asset lifespans safely and freeing up budget for more urgent needs. Insights also inform procurement—failure patterns may reveal manufacturer-specific issues or environmental factors affecting equipment longevity.
+
+In practice, predictive maintenance often operates alongside preventive strategies. Routine inspections remain necessary but are augmented by analytics that direct crews toward equipment showing early warning signs. This hybrid approach maximizes the value of existing programs while gradually modernizing asset management.
+
+The scale challenge is real, and utilities struggle with it. You have decades-old assets with diverse systems built over different periods. Shell faced this exact problem and built something interesting: the Real-Time Data Ingestion Platform (RTDIP), which they've open-sourced. The challenge they were solving is familiar to anyone in energy: how do you proactively monitor assets at scale when they're running on legacy systems, modern systems, and everything in between?
+
+The problem wasn't just technical—it was architectural. Shell has over 80 energy sites globally, each with different systems. Some sites use modern DCS systems with APIs, others have legacy historians that only export CSV files. Some have real-time streaming capabilities, others batch data once a day. The challenge was building a platform that could handle all of these without requiring every site to upgrade their infrastructure.
+
+RTDIP integrates all of Shell's legacy and current assets into a common data platform that handles both historical and real-time data. They're pulling time series data from historians, DCS systems, alarms, videos, and lab data—basically everything. The scale is impressive: about 5 million sensors flow through daily, monitoring more than 18,000 pieces of equipment. Dan Jeavons, Shell's Chief Digital Technology Adviser, told me they've integrated time series data from historians and DCS systems, added alarms and videos, and even added lab data, all with very short lag times for real-time processing.
+
+The platform architecture had to solve several problems. First, data format standardization—different systems report data in different formats, using different timestamps, different units, and different quality flags. RTDIP normalizes all of this into a common schema. Second, they needed to handle both batch and streaming data, so the platform supports both historical backfills and real-time ingestion. Third, they built time series functions (resampling, interpolation, and time-weighted averages) that are essential when combining data from systems that sample at different frequencies.
+
+They use Delta Lake for storage, which gives them ACID transactions, schema evolution, and time travel capabilities. This matters when you're dealing with data that might have quality issues or needs to be reprocessed. The platform makes data accessible for Python developers, BI analysts, digital twins, and data science applications through a unified API.
+
+They open-sourced it through the Linux Foundation for Energy so other companies can use it—that's the kind of collaboration the industry needs. The real lesson here is about architecture: you can't solve this problem by forcing everyone to use the same systems. You have to build a platform that accepts diversity and normalizes it at the integration layer. That's harder to build, but it's the only approach that works at scale.
+
+Duke Energy shows another approach. Their Monitoring and Diagnostics center uses five analysts to monitor generating assets across seven states, covering over 87\% of their generating fleet with more than 11,000 models and 500,000 data points. The center uses predictive analytics to catch problems early, saving over \$34 million in a single early catch event in 2016.
+
+What makes this work isn't just the technology—it's the combination of technology and deep domain expertise. The center uses EPRI's reliability framework to design work processes, including how they communicate with sites, and PRiSM Predictive Asset Analytics for monitor alarming, trending, and in-depth analysis. The key is having analysts with 20-30 years of experience who understand what the system is trying to tell them. It's not just about the technology—it's about the people who can interpret the signals.
+
+The center serves over 87\% of Duke's generating fleet, including coal, simple cycle combustion turbines, combined cycle, and integrated gasification combined cycle plants. The challenge is that these assets are spread geographically across seven different US states, each with different instrumentation, different data systems, and different operational characteristics. The M\&D center had to build a system that's software and hardware agnostic to accommodate already installed technologies at different plants and minimize rip and replace costs.
+
+They track early catch warnings and avoided costs systematically. The \$34 million savings in 2016 came from catching a problem early enough to prevent a catastrophic failure. They've been using predictive analytics technology since 2004, but it took a catastrophic event to get top management support and accelerate the program. That's a pattern I see a lot: technology exists, but it takes a crisis to get organizational buy-in.
+
+The team is consistently seeking new opportunities for further improvements in reliability—improved sensor and instrumentation infrastructure maintenance is one path, integration of new technologies as they develop is another. The lesson here is that predictive maintenance isn't a one-time project—it's an ongoing capability that evolves as you learn what works and what doesn't.
+
+Dominion Energy took a different angle, focusing on pole decay prediction. They developed a predictive maintenance model that factors in pole age, wood species, soil type, weather events, and inspection history to predict when poles need inspection. The model reduced overall pole failure rates from 8\% to less than 3\% and reduced manual inspections by over 60\%. That's the kind of targeted impact that matters—it prevents failures that could disrupt electricity supply.
+
+Enel, the world's largest private renewable energy operator, uses predictive analytics across their global fleet. Their remote predictive diagnostic center has prevented 461 failures, avoiding an estimated €47M in losses. They've also reduced emissions by 410,000 tCO2e over 24 months from thermal fleet catches—equivalent to taking 95,635 gas-powered vehicles off the road for a year. The platform uses edge data capture to avoid overloading their network infrastructure, which is critical when managing assets across 31 countries.
+
+
+\subsection{Setting Risk Score Thresholds}\label{setting-risk-score-thresholds}
+
+Predictive maintenance models output risk scores (a 0-1 probability of failure, for example), and utilities must set thresholds to decide when to act. A high threshold, such as 0.8, only flags highest-risk assets, resulting in fewer false alarms but potentially missing some failures. A low threshold, such as 0.3, flags more assets, catching more failures but increasing false alarms and maintenance costs.
+
+Threshold selection depends on the cost of false alarms, the cost of missed failures (including outages and emergency repairs), available maintenance resources, and regulatory requirements for reliability. Utilities often use ROC curves to visualize the precision-recall trade-off and select thresholds that balance operational priorities.
+
+
+\subsection{Building Predictive Maintenance Models}\label{building-predictive-maintenance-models}
+
+We walk through a complete predictive maintenance workflow using two complementary approaches: classification for failure prediction and anomaly detection for identifying unusual behavior patterns. This dual approach is common in production systems, and I've seen it work well because you get both signals—the ``what's likely to fail'' signal from classification and the ``something's weird here'' signal from anomaly detection.
+
+We generate synthetic SCADA sensor data to simulate real transformer monitoring.
+
+\lstinputlisting[firstline=21,lastline=44]{../code/c5_pdm_for_grid.py}
+
+This creates realistic sensor readings for transformers—temperature, vibration, oil pressure, and load—with correlations between sensor values and failure probability. This simulates real SCADA systems, and in practice, you'd pull this from your SCADA historian. The patterns are the same.
+
+\lstinputlisting[firstline=45,lastline=59]{../code/c5_pdm_for_grid.py}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{../images/c5_chapter5_sensor_trends.png}
+\caption{Sensor trends.}
+\label{fig:c5_sensor_trends}
+\end{figure}
+
+We apply anomaly detection to identify unusual patterns in sensor data.
+
+\lstinputlisting[firstline=62,lastline=75]{../code/c5_pdm_for_grid.py}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{../images/c5_chapter5_anomaly.png}
+\caption{Anomaly detection results.}
+\label{fig:c5_anomaly}
+\end{figure}
+
+We train a classification model to predict failures from sensor data.
+
+\lstinputlisting[firstline=84,lastline=105]{../code/c5_pdm_for_grid.py}
+
+The complete, runnable script is at \texttt{content/c5/pdm\_for\_grid.py}. Run it, experiment with different thresholds, and see how precision and recall trade off.
+
+
+\subsection{What I Want You to Remember}\label{what-i-want-you-to-remember}
+
+Predictive maintenance reduces costs and improves reliability. By targeting maintenance where it's needed, utilities avoid both premature replacements and catastrophic failures. Two approaches complement each other: classification models predict failure risk when historical data exists, while anomaly detection flags unusual behavior even without failure labels.
+
+Class imbalance is a constant challenge. Failures are rare, so accuracy alone is misleading—I've seen models that are 97\% accurate but useless because they just predict ``healthy'' for everything. Focus on precision, recall, and ROC AUC to assess model quality. Risk scores need operational context: model outputs are probabilities, not certainties, and thresholds must balance false alarms against missed failures based on operational priorities.
+
+Sensor data quality matters—garbage in, garbage out. Faulty sensors produce misleading predictions, so always validate sensor readings before feeding them to models. I've seen projects where the model was technically correct, but the sensors were drifting, so the model learned the drift, not the actual failure patterns.
+
+The key insight from my drilling automation work: small improvements, when you do them many times, compound into huge value. The same principle applies here. If you can predict just 20\% of failures before they happen, that's still a massive win.
+
+
+\subsection{What's Next}\label{whats-next}
+
+In Chapter 6, we'll apply similar predictive techniques to outage prediction, using weather, vegetation, and asset data to anticipate storm-related failures and optimize crew staging. The principles are the same, but the data sources and use cases are different.
