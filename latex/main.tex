@@ -1,0 +1,183 @@
+\documentclass[11pt,oneside]{book}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{calc}
+\usepackage{makeidx}
+\makeindex
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{upquote}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amsthm}
+\usepackage{url}
+\usepackage{breakurl}
+
+% Bibliography
+\usepackage[backend=biber,style=ieee,sorting=none]{biblatex}
+\addbibresource{../_internal/case_studies.bib}
+\addbibresource{../_internal/bibtex_library.bib}
+
+% Page geometry
+\geometry{
+  letterpaper,
+  left=1in,
+  right=1in,
+  top=1in,
+  bottom=1in,
+  headheight=14pt
+}
+
+% Hyperref setup
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  filecolor=magenta,
+  urlcolor=cyan,
+  citecolor=blue,
+  pdftitle={Machine Learning for Power \& Utilities},
+  pdfauthor={Drew Triplett, David Radford, and Kyle T. Jones},
+  pdfsubject={Machine Learning, Electric Utilities, AI},
+  pdfkeywords={machine learning, utilities, AI, grid operations}
+}
+
+% Code listing style
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  tabsize=2,
+  language=Python,
+  upquote=true,
+  extendedchars=true,
+  inputencoding=utf8,
+  literate={²}{{\textsuperscript{2}}}1
+}
+
+% Title information
+\title{Machine Learning for Power \& Utilities\\
+\large A Practical Guide to Applying AI and ML in the Electric Utility Industry}
+\author{Drew Triplett, David Radford, and Kyle T. Jones}
+\date{\today}
+
+% Custom commands
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\pyfile}[3]{\lstinputlisting[firstline=#2,lastline=#3]{#1}}
+\newcommand{\tightlist}{}  % Pandoc compatibility
+\newcommand{\real}[1]{\dimexpr#1\relax}  % Pandoc compatibility for table column widths
+
+\begin{document}
+
+% Front matter
+\frontmatter
+
+% Title page
+\maketitle
+
+% Copyright page
+\newpage
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+Copyright \copyright\ \the\year\ Drew Triplett, David Radford, and Kyle T. Jones\\
+All rights reserved.
+\end{center}
+\vspace*{\fill}
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% Preface
+\include{preface}
+
+% Executive Summary
+\include{exec_summary}
+
+% Main matter
+\mainmatter
+
+% Part 1: Foundations
+\part{Foundations}
+
+\include{c1_introduction}
+\include{c2_data}
+\include{c3_fundamentals}
+
+% Part 2: Core Applications
+\part{Core Applications}
+
+\include{c4_load_forecasting}
+\include{c5_predictive_maintenance}
+\include{c6_outage_prediction}
+\include{c7_grid_optimization}
+\include{c8_renewable_integration}
+\include{c9_customer_analytics}
+
+% Part 3: Advanced Techniques
+\part{Advanced Techniques}
+
+\include{c10_computer_vision}
+\include{c11_nlp}
+\include{c12_llms}
+\include{c13_enterprise_integration}
+\include{c27_causal_inference}
+\include{c28_multi_task}
+
+% Part 4: Integration and Scale
+\part{Integration and Scale}
+
+\include{c14_mlops}
+\include{c15_orchestration}
+\include{c16_platform_deployment}
+\include{c17_cybersecurity}
+\include{c18_ethics}
+\include{c19_roi}
+\include{c20_strategic_roadmap}
+\include{c22_realtime}
+\include{c23_compliance}
+\include{c24_feature_engineering}
+\include{c25_reliability}
+\include{c26_market_operations}
+
+% Epilogue
+\include{c21_epilogue}
+
+% Back matter
+\backmatter
+
+% Appendices
+\appendix
+\include{appendix_glossary}
+\include{appendix_acronyms}
+\include{appendix_datasets}
+
+% Bibliography
+\printbibliography[heading=bibintoc,title={References}]
+
+% Index (auto-generated, run makeindex)
+\printindex
+
+\end{document}
+
